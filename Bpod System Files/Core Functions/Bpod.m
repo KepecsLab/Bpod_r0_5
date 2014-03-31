@@ -1,3 +1,4 @@
+function Bpod
 try
     evalin('base', 'BpodSystem;');
     BpodErrorSound;
@@ -20,6 +21,28 @@ catch
     BpodSystem.LastTimestamp = 0;
     BpodSystem.InStateMatrix = 0;
     BpodSplashScreen(1);
+
+    % Load Bpod path
+    FullBpodPath = which('Bpod');
+    BpodSystem.BpodPath = FullBpodPath(1:strfind(FullBpodPath, 'Bpod System Files')-1);
+    
+    %Check for Data folder
+    dir_data = dir( fullfile(BpodSystem.BpodPath,'Data') );
+    if length(dir_data) == 0, %then Data didn't exist.
+        mkdir([BpodSystem.BpodPath,'/' 'Data']);
+    end
+    
+    %Check for CalibrationFiles folder
+    dir_calfiles = dir( fullfile(BpodSystem.BpodPath,'Calibration Files') );
+    if length(dir_calfiles) == 0, %then Data didn't exist.
+        mkdir([BpodSystem.BpodPath,'/' 'Calibration Files']);
+    end
+    
+    % Load input channel settings
+    BpodSystem.InputConfigPath = fullfile(BpodSystem.BpodPath, 'Settings Files', 'BpodInputConfig.mat');
+    load(BpodSystem.InputConfigPath);
+    BpodSystem.InputsEnabled = BpodInputConfig;
+    
     try
         InitializeHardware
     catch
@@ -58,5 +81,6 @@ catch
                                     'GlobalTimerTrig', 'GlobalTimerCancel', 'GlobalCounterReset', 'PWM1', 'PWM2', 'PWM3', 'PWM4', 'PWM5', 'PWM6', 'PWM7', 'PWM8'};
     BpodSystem.Birthdate = now;
     BpodSystem.CurrentProtocolName = '';
+    evalin('base', 'global BpodSystem')
     clear ans
 end

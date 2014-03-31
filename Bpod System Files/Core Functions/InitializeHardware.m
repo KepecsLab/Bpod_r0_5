@@ -1,3 +1,5 @@
+function InitializeHardware
+
 clc
 global BpodSystem
 BaudRate = 115200;
@@ -27,8 +29,8 @@ end
 ComPortPath = fullfile(BpodPath,'Bpod System Files','LastComPortUsed.mat');
 if exist(ComPortPath) == 2
     load(ComPortPath);
-    [InList, pos] = FastWordDetect(LastComPortUsed, Ports);
-    if InList,
+     pos = strmatch(LastComPortUsed, Ports, 'exact'); 
+    if ~isempty(pos)
         Temp = Ports;
         Ports{1} = LastComPortUsed;
         Ports(2:length(Temp)) = Temp(find(1:length(Temp) ~= pos));
@@ -85,10 +87,8 @@ clc
 disp(['Bpod connected on port ' Ports{Found}])
 LastComPortUsed = Ports{Found};
 save(ComPortPath, 'LastComPortUsed');
-clear Found g x Ports serialInfo ComPortPath LastComPortUsed DTR
 if BpodSystem.SerialPort.BytesAvailable > 0
     trash = fread(BpodSystem.SerialPort, BpodSystem.SerialPort.BytesAvailable);
 end
 fwrite(BpodSystem.SerialPort,char('F'));
 BpodSystem.FirmwareBuild = fread(BpodSystem.SerialPort, 1);
-clear trash RegisteredPorts

@@ -37,6 +37,8 @@ byte BlueLEDPin = 12;
 
 byte PortPWMOutputState[8] = {0}; // State of all 8 output lines (As 8-bit PWM value from 0-255 representing duty cycle. PWM cycles at 1KHZ)
 byte PortValveOutputState = 0;   // State of all 8 valves
+byte PortInputsEnabled[8] = {0}; // Enabled or disabled input reads of port IR lines
+byte WireInputsEnabled[4] = {0}; // Enabled or disabled input reads of wire lines
 boolean PortInputLineValue[8] = {0}; // Direct reads of digital values of IR beams
 boolean PortInputLineLastKnownStatus[8] = {0}; // Last known status of IR beams
 boolean BNCInputLineValue[2] = {0}; // Direct reads of BNC input lines
@@ -52,6 +54,7 @@ byte OverrideFlag = 0; // If 1, ignores input channels for current cycle
 byte CurrentEvent[10] = {0}; // What event code just happened and needs to be handled. Up to 10 can be acquired per 30us loop.
 byte nCurrentEvents = 0; // Index of current event
 byte SoftEvent = 0; // What soft event code just happened
+
 
 //////////////////////////////////
 // Initialize general use vars:  /
@@ -235,6 +238,21 @@ void loop()
           GlobalCounterMatrix[x][y] = SerialUSB.read();
         }
       }
+      // Get global counter attached events
+      for (int x = 0; x < 5; x++) {
+          while (SerialUSB.available() == 0) {}
+          GlobalCounterAttachedEvents[x] = SerialUSB.read();
+      }
+      // Get input channel configurtaion
+      for (int x = 0; x < 8; x++) {
+          while (SerialUSB.available() == 0) {}
+          PortInputsEnabled[x] = SerialUSB.read();
+      }
+      for (int x = 0; x < 4; x++) {
+          while (SerialUSB.available() == 0) {}
+          WireInputsEnabled[x] = SerialUSB.read();
+      }
+      
       // Get state timers
       for (int x = 0; x < nStates; x++) {
               StateTimers[x] = ReadLong();
@@ -242,11 +260,6 @@ void loop()
       // Get global timers
       for (int x = 0; x < 5; x++) {
               GlobalTimers[x] = ReadLong();
-      }
-      // Get global counter attached events
-      for (int x = 0; x < 5; x++) {
-          while (SerialUSB.available() == 0) {}
-          GlobalCounterAttachedEvents[x] = SerialUSB.read();
       }
       // Get global counter event count thresholds
       for (int x = 0; x < 5; x++) {
@@ -350,28 +363,32 @@ void loop()
          if (OverrideFlag == false) {
            // Refresh state of sensors and inputs
            for (int x = 0; x < 8; x++) {
-            PortInputLineValue[x] = digitalRead(PortDigitalInputLines[x]);
+             if (PortInputsEnabled[x] == 1) { 
+              PortInputLineValue[x] = digitalRead(PortDigitalInputLines[x]);
+             }
           }
           for (int x = 0; x < 2; x++) {
             BNCInputLineValue[x] = digitalRead(BncInputLines[x]);
           }
           for (int x = 0; x < 4; x++) {
-            WireInputLineValue[x] = digitalRead(WireDigitalInputLines[x]);
+            if (WireInputsEnabled[x] == 1) { 
+              WireInputLineValue[x] = digitalRead(WireDigitalInputLines[x]);
+            }
           }
          }
          // Determine which port event occurred
          int Ev = 0; // Since port-in and port-out events are indexed sequentially, Ev replaces x in the loop.
-         for (int x = 0; x < 8; x++) { 
-           // Determine port entry events
-           if ((PortInputLineValue[x] == HIGH) && (PortInputLineLastKnownStatus[x] == LOW)) {
-              PortInputLineLastKnownStatus[x] = HIGH; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
-           }
-           Ev = Ev + 1;
-           // Determine port exit events
-           if ((PortInputLineValue[x] == LOW) && (PortInputLineLastKnownStatus[x] == HIGH)) {
-              PortInputLineLastKnownStatus[x] = LOW; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
-           }
-           Ev = Ev + 1;
+         for (int x = 0; x < 8; x++) {
+               // Determine port entry events
+               if ((PortInputLineValue[x] == HIGH) && (PortInputLineLastKnownStatus[x] == LOW)) {
+                  PortInputLineLastKnownStatus[x] = HIGH; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
+               }
+               Ev = Ev + 1;
+               // Determine port exit events
+               if ((PortInputLineValue[x] == LOW) && (PortInputLineLastKnownStatus[x] == HIGH)) {
+                  PortInputLineLastKnownStatus[x] = LOW; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
+               }
+               Ev = Ev + 1;
          }
          // Determine which BNC event occurred
          for (int x = 0; x < 2; x++) { 
@@ -389,15 +406,15 @@ void loop()
          // Determine which Wire event occurred
          for (int x = 0; x < 4; x++) { 
            // Determine Wire low-to-high events
-           if ((WireInputLineValue[x] == HIGH) && (WireInputLineLastKnownStatus[x] == LOW)) {
-              WireInputLineLastKnownStatus[x] = HIGH; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
-           }
-           Ev = Ev + 1;
-           // Determine Wire high-to-low events
-           if ((WireInputLineValue[x] == LOW) && (WireInputLineLastKnownStatus[x] == HIGH)) {
-              WireInputLineLastKnownStatus[x] = LOW; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
-           }
-           Ev = Ev + 1;
+             if ((WireInputLineValue[x] == HIGH) && (WireInputLineLastKnownStatus[x] == LOW)) {
+                WireInputLineLastKnownStatus[x] = HIGH; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
+             }
+             Ev = Ev + 1;
+             // Determine Wire high-to-low events
+             if ((WireInputLineValue[x] == LOW) && (WireInputLineLastKnownStatus[x] == HIGH)) {
+                WireInputLineLastKnownStatus[x] = LOW; CurrentEvent[nCurrentEvents] = Ev; nCurrentEvents++;
+             }
+             Ev = Ev + 1;
          }
           // Map soft events to event code scheme
           if (SoftEvent < 254) {

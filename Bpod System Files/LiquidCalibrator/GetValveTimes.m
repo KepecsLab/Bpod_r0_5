@@ -25,3 +25,4 @@ for x = 1:nValves
         end
     end
 end
+ValveTimes = ValveTimes/1000;

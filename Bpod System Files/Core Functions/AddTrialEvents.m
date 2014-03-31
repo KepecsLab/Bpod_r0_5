@@ -48,4 +48,5 @@ TE.RawData.OriginalStateNamesByNumber{TrialNum} = BpodSystem.StateMatrix.StateNa
 TE.RawData.OriginalStateData{TrialNum} = RawTrialEvents.States;
 TE.RawData.OriginalEventData{TrialNum} = RawTrialEvents.Events;
 TE.TrialStartTimestamp(TrialNum) = RawTrialEvents.TrialStartTimestamp;
+TE.Settings = BpodSystem.ProtocolSettings;
 newTE = TE;

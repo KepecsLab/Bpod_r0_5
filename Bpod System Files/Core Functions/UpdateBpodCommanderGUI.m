@@ -4,10 +4,8 @@ function UpdateBpodCommanderGUI
 global BpodSystem
 EventNames = BpodSystem.EventNames;
 StateNames = BpodSystem.StateMatrix.StateNames;
-if BpodSystem.CurrentStateCode ~= 1
-    set(BpodSystem.GUIHandles.PreviousStateDisplay, 'String', get(BpodSystem.GUIHandles.CurrentStateDisplay, 'String'));
-    set(BpodSystem.GUIHandles.CurrentStateDisplay, 'String', StateNames{BpodSystem.CurrentStateCode});
-end
+set(BpodSystem.GUIHandles.PreviousStateDisplay, 'String', get(BpodSystem.GUIHandles.CurrentStateDisplay, 'String'));
+set(BpodSystem.GUIHandles.CurrentStateDisplay, 'String', StateNames{BpodSystem.CurrentStateCode});
 if BpodSystem.LastEvent <= length(EventNames)
     set(BpodSystem.GUIHandles.LastEventDisplay, 'String', EventNames{BpodSystem.LastEvent});
 end

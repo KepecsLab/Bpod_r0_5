@@ -76,16 +76,17 @@ image(BG); axis off;
 clear ha BG k PB
 
 % Load protocols into selector
-loadBpodPath
-ProtocolPath = fullfile(BpodPath,'Protocols');
+ProtocolPath = fullfile(BpodSystem.BpodPath,'Protocols');
 Candidates = dir(ProtocolPath);
 ProtocolNames = cell(1);
-nProtocols = 1;
-ProtocolNames{1} = '*New Protocol';
-for x = 3:length(Candidates)
-    if Candidates(x).isdir
-        nProtocols = nProtocols + 1;
-        ProtocolNames{nProtocols} = Candidates(x).name;
+nCandidates = length(Candidates)-2;
+nProtocols = 0;
+if nCandidates > 0
+    for x = 3:length(Candidates)
+        if Candidates(x).isdir
+            nProtocols = nProtocols + 1;
+            ProtocolNames{nProtocols} = Candidates(x).name;
+        end
     end
 end
 if isempty(ProtocolNames)

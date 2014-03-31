@@ -4,6 +4,8 @@ classdef BpodObject < handle
     
     properties
         StateMatrix
+        Birthdate
+        LastTimestamp
         CurrentStateCode
         CurrentStateName
         LastEvent
@@ -12,21 +14,26 @@ classdef BpodObject < handle
         HardwareState
         BNCOverrideState
         GUIHandles
+        GUIData
         Graphics
         EventNames
         OutputActionNames
-        Birthdate
         BeingUsed
         InStateMatrix
         Live
         CurrentProtocolName
-        SettingsPath
-        DataPath
-        LastTimestamp
         SerialPort
         Stimuli
         FirmwareBuild
         SplashData
+        ProtocolSettings
+        Data
+        BpodPath
+        SettingsPath
+        DataPath
+        ProtocolPath
+        InputConfigPath
+        InputsEnabled
     end
     
     methods

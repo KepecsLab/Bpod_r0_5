@@ -87,25 +87,11 @@ varargout{1} = handles.output;
 
 
 % --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
+function pushbutton1_Callback(hObject, eventdata, handles) % Port configuration
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-loadBpodPath;
-DioPath = fullfile(BpodPath, 'Bpod System Files', 'DIOmap.m');
-if exist(DioPath) == 0
-    % Copy from template
-    TemplatePath = fullfile(BpodPath, 'Bpod System Files', 'DIOmap_template.m');
-    copyfile(TemplatePath, DioPath);
-end
-edit(DioPath);
-% This script un-maximizes the editor.
-desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
-jEditor = desktop.getGroupContainer('Editor').getTopLevelAncestor;
-set(jEditor, 'Maximized', 'off')
-% --- end un-maximize editor
-pause(.001);
-msgbox('Please edit DIO map and save when finished')
+BpodPortConfig;
 close(SettingsMenu)
 
 % --- Executes on button press in pushbutton2.

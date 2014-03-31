@@ -323,7 +323,7 @@ PulseDurations = [];
 for x = 1:8
     if ~isempty(handles.PendingMeasurements{x})
         ValveIDs = [ValveIDs x];
-        PulseDurations = [PulseDurations handles.PendingMeasurements{x}(1)];
+        PulseDurations = [PulseDurations (handles.PendingMeasurements{x}(1))/1000];
     end
 end
 nValidMeasurements = length(ValveIDs);
@@ -331,7 +331,7 @@ if ~isempty(ValveIDs)
     % Deliver liquid
     k = msgbox('Please refill liquid reservoirs and click Ok to begin.', 'modal');
     waitfor(k);
-    LiquidRewardCal(100, ValveIDs, PulseDurations, 200)
+    LiquidRewardCal(100, ValveIDs, PulseDurations, .2)
     
     % Enter measurements:
     
