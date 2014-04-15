@@ -29,13 +29,29 @@ sma.GlobalTimerMatrix(isnan(sma.GlobalTimerMatrix)) = nStates+1;
 sma.GlobalCounterMatrix(isnan(sma.GlobalCounterMatrix)) = nStates+1;
 
 %% Format input, output and wave matrices into linear byte vectors for transfer
-RotMatrix = (sma.InputMatrix-1)'; % Subtract 1 from all states to convert to c++ (base 0) 
+if nStates > 1 % More elegant solution needed here - prevents 1:end from returning a column vector for one state (returns row for matrix)
+    RotMatrix = (sma.InputMatrix-1)'; % Subtract 1 from all states to convert to c++ (base 0) 
+else
+    RotMatrix = (sma.InputMatrix-1);
+end
 InputMatrix = uint8(RotMatrix(1:end));
-RotMatrix = sma.OutputMatrix';
+if nStates > 1
+    RotMatrix = sma.OutputMatrix';
+else
+    RotMatrix = sma.OutputMatrix;
+end
 OutputMatrix = uint8(RotMatrix(1:end));
-RotMatrix = (sma.GlobalTimerMatrix-1)';
+if nStates > 1
+    RotMatrix = (sma.GlobalTimerMatrix-1)';
+else
+    RotMatrix = (sma.GlobalTimerMatrix-1);
+end
 GlobalTimerMatrix = uint8(RotMatrix(1:end));
-RotMatrix = (sma.GlobalCounterMatrix-1)';
+if nStates > 1
+    RotMatrix = (sma.GlobalCounterMatrix-1)';
+else
+    RotMatrix = (sma.GlobalCounterMatrix-1);
+end
 GlobalCounterMatrix = uint8(RotMatrix(1:end));
 GlobalCounterAttachedEvents = uint8(sma.GlobalCounterEvents);
 GlobalCounterThresholds = uint32(sma.GlobalCounterThresholds);

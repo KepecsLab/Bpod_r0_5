@@ -42,7 +42,7 @@ x = 0;
 while (Found == 0) && (x < length(Ports)) && ~isempty(Ports{1})
     x = x + 1;
     disp(['Trying port ' Ports{x}])
-    TestSer = serial(Ports{x}, 'BaudRate', BaudRate, 'DataBits', 8, 'StopBits', 1, 'Timeout', 1, 'DataTerminalReady', 'on');
+    TestSer = serial(Ports{x}, 'BaudRate', BaudRate, 'Timeout', 1, 'DataTerminalReady', 'on');
     fopen(TestSer);
     set(TestSer, 'RequestToSend', 'on')
     if ~strcmp(system_dependent('getos'), 'Microsoft Windows Vista')  
@@ -66,7 +66,7 @@ while (Found == 0) && (x < length(Ports)) && ~isempty(Ports{1})
 end
 pause(.1);
 if Found ~= 0
-BpodSystem.SerialPort = serial(Ports{Found}, 'BaudRate', BaudRate, 'DataBits', 8, 'StopBits', 1, 'Timeout', 1, 'DataTerminalReady', 'on');
+BpodSystem.SerialPort = serial(Ports{Found}, 'BaudRate', BaudRate, 'Timeout', 1, 'DataTerminalReady', 'on');
 else
     error('Could not find a Bpod device.');
 end
