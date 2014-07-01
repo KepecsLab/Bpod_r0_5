@@ -29,6 +29,15 @@ for x = 1:8
         set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
     end
 end
+% Set virtual event indicators
+for x = 1:8
+    ButtonHandle = BpodSystem.GUIHandles.PortvPokeButton(x);
+    if BpodSystem.HardwareState.PortSensors(x) == 1
+        set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
+    else
+        set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
+    end
+end
 % Set GUI BNC state indicators
 for x = 1:2
     ButtonHandle = BpodSystem.GUIHandles.BNCInputButton(x);

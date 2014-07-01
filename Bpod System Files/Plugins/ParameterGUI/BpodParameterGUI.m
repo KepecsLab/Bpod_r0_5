@@ -16,7 +16,7 @@ switch Op
             ParamValues(x) = getfield(Params, ParamNames{x});
         end
         Vsize = 25+(30*nValues);
-        ParamFig = figure('Position', [100 350 320 Vsize],'name','Live Params','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+        BpodSystem.GUIHandles.Figures.BpodParameterGUI = figure('Position', [100 650 320 Vsize],'name','Live Params','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
         uicontrol('Style', 'text', 'String', 'Parameter', 'Position', [10 Vsize-20 200 20], 'FontWeight', 'bold', 'FontSize', 14, 'FontName', 'Arial');
         uicontrol('Style', 'text', 'String', 'Value', 'Position', [235 Vsize-20 70 20], 'FontWeight', 'bold', 'FontSize', 14, 'FontName', 'Arial');
         BpodSystem.GUIHandles.ParameterGUI = struct;

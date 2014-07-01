@@ -5,7 +5,7 @@ BpodSystem.GUIHandles.MainFig = figure('Position',[100 200 800 400],'name','B-Po
 BpodSystem.Graphics.GoButton = imread('GoButton.bmp');
 BpodSystem.GUIHandles.RunButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [705 45 85 85], 'Callback', 'RunProtocol', 'CData', BpodSystem.Graphics.GoButton, 'TooltipString', 'Run selected protocol');
 BpodSystem.Graphics.OffButton = imread('ButtonOff.bmp');
-BpodSystem.Graphics.OffButtonDark = imread('ButtonOff_Dark.bmp');
+BpodSystem.Graphics.OffButtonDark = imread('ButtonOff_dark.bmp');
 BpodSystem.Graphics.OnButton = imread('ButtonOn.bmp');
 BpodSystem.Graphics.PauseButton = imread('PauseButton.bmp');
 BpodSystem.Graphics.SoftTriggerButton = imread('BpodSoftTrigger.bmp');
@@ -60,7 +60,10 @@ BpodSystem.GUIHandles.OutputWireButton(2) = uicontrol('Style', 'pushbutton', 'St
 BpodSystem.GUIHandles.OutputWireButton(3) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [272 36 30 30], 'Callback', 'ManualOverride(7,3);', 'CData', BpodSystem.Graphics.OffButtonDark, 'TooltipString', 'Toggle TTL: output wire 1');
 BpodSystem.GUIHandles.OutputWireButton(4) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [313 36 30 30], 'Callback', 'ManualOverride(7,4);', 'CData', BpodSystem.Graphics.OffButtonDark, 'TooltipString', 'Toggle TTL: output wire 1');
 
-BpodSystem.GUIHandles.SoftTriggerButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [407 32 40 40], 'Callback', 'ManualOverride(8,0);', 'CData', BpodSystem.Graphics.SoftTriggerButton, 'TooltipString', 'Send soft event code');
+BpodSystem.GUIHandles.SoftTriggerButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [363 32 40 40], 'Callback', 'ManualOverride(8,0);', 'CData', BpodSystem.Graphics.SoftTriggerButton, 'TooltipString', 'Send soft event code byte');
+
+BpodSystem.GUIHandles.HWSerialTriggerButton1 = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [414 32 40 40], 'Callback', 'ManualOverride(9,0);', 'CData', BpodSystem.Graphics.SoftTriggerButton, 'TooltipString', 'Send byte to hardware serial port 1');
+BpodSystem.GUIHandles.HWSerialTriggerButton2 = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [465 32 40 40], 'Callback', 'ManualOverride(9,1);', 'CData', BpodSystem.Graphics.SoftTriggerButton, 'TooltipString', 'Send byte to hardware serial port 2');
 
 BpodSystem.GUIHandles.CurrentStateDisplay = uicontrol('Style', 'text', 'String', 'None', 'Position', [12 268 115 20], 'FontWeight', 'bold', 'FontSize', 9);
 BpodSystem.GUIHandles.PreviousStateDisplay = uicontrol('Style', 'text', 'String', 'None', 'Position', [12 219 115 20], 'FontWeight', 'bold', 'FontSize', 9);
@@ -68,7 +71,10 @@ BpodSystem.GUIHandles.LastEventDisplay = uicontrol('Style', 'text', 'String', 'N
 BpodSystem.GUIHandles.TimeDisplay = uicontrol('Style', 'text', 'String', '0', 'Position', [12 117 115 20], 'FontWeight', 'bold', 'FontSize', 9);
 BpodSystem.GUIHandles.CxnDisplay = uicontrol('Style', 'text', 'String', 'Idle', 'Position', [12 62 115 20], 'FontWeight', 'bold', 'FontSize', 9);
 BpodSystem.GUIHandles.ProtocolSelector = uicontrol('Style', 'listbox', 'String', 'None Loaded', 'Position', [520 45 175 85], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8]);
-BpodSystem.GUIHandles.SoftCodeSelector = uicontrol('Style', 'popupmenu', 'String', {'1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9'; '10'}, 'Position', [398 67 60 40], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8]);
+BpodSystem.GUIHandles.SoftCodeSelector = uicontrol('Style', 'edit', 'String', '255', 'Position', [363 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
+BpodSystem.GUIHandles.HWSerialCodeSelector1 = uicontrol('Style', 'edit', 'String', '255', 'Position', [414 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
+BpodSystem.GUIHandles.HWSerialCodeSelector2 = uicontrol('Style', 'edit', 'String', '255', 'Position', [465 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
+
 ha = axes('units','normalized', 'position',[0 0 1 1]);
 uistack(ha,'bottom');
 BG = imread('ConsoleBG.bmp');
