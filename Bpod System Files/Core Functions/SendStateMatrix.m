@@ -68,22 +68,11 @@ EightBitMatrix = ['P' nStates InputMatrix OutputMatrix GlobalTimerMatrix GlobalC
 ThirtyTwoBitMatrix = [StateTimers GlobalTimers GlobalCounterThresholds];
 
 %% Send state matrix to Bpod device
-% fwrite(BpodSystem.SerialPort, 'P');
-% fwrite(BpodSystem.SerialPort, nStates, 'uint8');
-% fwrite(BpodSystem.SerialPort,InputMatrix, 'uint8');
-% fwrite(BpodSystem.SerialPort,OutputMatrix, 'uint8');
-% fwrite(BpodSystem.SerialPort,GlobalTimerMatrix, 'uint8');
-% fwrite(BpodSystem.SerialPort,GlobalCounterMatrix, 'uint8');
-% fwrite(BpodSystem.SerialPort, GlobalCounterAttachedEvents, 'uint8');
-% fwrite(BpodSystem.SerialPort, InputChannelConfig, 'uint8');
-% fwrite(BpodSystem.SerialPort,StateTimers, 'uint32');
-% fwrite(BpodSystem.SerialPort,GlobalTimers, 'uint32');
-% fwrite(BpodSystem.SerialPort, GlobalCounterThresholds, 'uint32');
-fwrite(BpodSystem.SerialPort, EightBitMatrix, 'uint8');
-fwrite(BpodSystem.SerialPort, ThirtyTwoBitMatrix, 'uint32');
+ByteString = [EightBitMatrix typecast(ThirtyTwoBitMatrix, 'uint8')];
+BpodSerialWrite(ByteString, 'uint8');
 
 %% Recieve Acknowledgement
-Confirmed = fread(BpodSystem.SerialPort, 1); % Confirm that it has been received
+Confirmed = BpodSerialRead(1, 'uint8'); % Confirm that it has been received
 if isempty(Confirmed)
     Confirmed = 0;
 end

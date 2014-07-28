@@ -274,6 +274,7 @@ if ~isempty(NameList)
         FieldName = F{1};
         BpodSystem.ProtocolSettings = eval(['SettingStruct.' FieldName]);
         BpodSystem.Data = struct;
+        addpath(ProtocolPath);
         run(ProtocolPath);
     else
         BpodErrorSound;

@@ -20,8 +20,8 @@ void setup()
 
 void loop()
 {
-while (Serial1.available() == 0) {}
-  SoundIndex = Serial1.read();
+if (Serial.available()) {SoundIndex = Serial.read();}
+if (Serial1.available()) {SoundIndex = Serial1.read();}  
   switch(SoundIndex){
     case 1:
     rmp3.playfile("1.wav");
@@ -56,4 +56,5 @@ while (Serial1.available() == 0) {}
     case 255:
     rmp3.stop();
     }
+    SoundIndex = 0;
 }

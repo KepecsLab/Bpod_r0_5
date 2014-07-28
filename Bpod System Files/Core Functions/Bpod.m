@@ -20,6 +20,13 @@ catch
     BpodSystem.GUIHandles.SplashFig = figure('Position',[400 300 485 300],'name','Bpod','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
     BpodSystem.LastTimestamp = 0;
     BpodSystem.InStateMatrix = 0;
+    if exist('BpodSystemSettings.mat') > 0
+        load BpodSystemSettings;
+        BpodSystem.SystemSettings = BpodSystemSettings;
+    else
+        BpodSystem.SystemSettings = struct;
+    end
+    
     BpodSplashScreen(1);
 
     % Load Bpod path
@@ -43,6 +50,16 @@ catch
     load(BpodSystem.InputConfigPath);
     BpodSystem.InputsEnabled = BpodInputConfig;
     
+    % Determine if PsychToolbox is installed. If so, serial communication
+    % will proceed through lower latency psychtoolbox IOport serial interface (compiled for each platform).
+    % Otherwise, Bpod defaults to MATLAB's Java based serial interface.
+    try 
+        V = PsychtoolboxVersion;
+        BpodSystem.UsesPsychToolbox = 1;
+    catch
+        BpodSystem.UsesPsychToolbox = 0;
+    end
+    
     try
         InitializeHardware
     catch
@@ -52,7 +69,6 @@ catch
         clear BpodSystem SplashData Img StimuliDef Ports ha serialInfo x
         msgbox('Unable to connect to Bpod.', 'Modal')
         BpodErrorSound;
-        clear BpodPath ComPortPath Found InList LastComPortUsed RegisteredPorts pos trash
         error('Error: Bpod device not found.')
     end
     BpodSplashScreen(2);

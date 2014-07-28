@@ -141,10 +141,12 @@ void loop()
   CommandByte = SerialUSB.read();  // P for Program, R for Run, O for Override, 6 for Device ID
   switch (CommandByte) {
     case '6':  // Initialization handshake
+      digitalWrite(25, HIGH);
       SerialUSB.print(5);
       delay(100);
       SerialUSB.flush();
       SessionStartTime = millis();
+      digitalWrite(25, LOW);
       break;
     case 'F':  // Return firmware build number
       SerialUSB.write(FirmwareBuildVersion);
@@ -280,16 +282,22 @@ void loop()
       }
       // Read initial state of sensors      
       for (int x = 0; x < 8; x++) {
-        PortInputLineValue[x] = digitalRead(PortDigitalInputLines[x]); // Read each photogate's current state into an array
-        if (PortInputLineValue[x] == HIGH) {PortInputLineLastKnownStatus[x] = true;} else {PortInputLineLastKnownStatus[x] = false;} // Update last known state of input line 
+        if (PortInputsEnabled[x] == 1) { 
+          PortInputLineValue[x] = digitalRead(PortDigitalInputLines[x]); // Read each photogate's current state into an array
+          if (PortInputLineValue[x] == HIGH) {PortInputLineLastKnownStatus[x] = HIGH;} else {PortInputLineLastKnownStatus[x] = LOW;} // Update last known state of input line
+        } else {
+          PortInputLineLastKnownStatus[x] = LOW; PortInputLineValue[x] == LOW;
+        } 
       }
       for (int x = 0; x < 2; x++) {
         BNCInputLineValue[x] = digitalRead(BncInputLines[x]);
         if (BNCInputLineValue[x] == HIGH) {BNCInputLineLastKnownStatus[x] = true;} else {BNCInputLineLastKnownStatus[x] = false;}
       }
       for (int x = 0; x < 4; x++) {
-        WireInputLineValue[x] = digitalRead(WireDigitalInputLines[x]);
-        if (WireInputLineValue[x] == HIGH) {WireInputLineLastKnownStatus[x] = true;} else {WireInputLineLastKnownStatus[x] = false;}
+        if (WireInputsEnabled[x] == 1) { 
+          WireInputLineValue[x] = digitalRead(WireDigitalInputLines[x]);
+          if (WireInputLineValue[x] == HIGH) {WireInputLineLastKnownStatus[x] = true;} else {WireInputLineLastKnownStatus[x] = false;}
+        }
       }
       // Set meaningful state timer variable (false if state timer is not used, so that a Tup event isn't generated)
       if (InputStateMatrix[CurrentState][38] != CurrentState) {
@@ -348,10 +356,10 @@ void loop()
                       WireInputLineValue[VirtualEventData] = LOW;
                     }
                 break;
+                case 'S':  // Soft event
+                      SoftEvent = VirtualEventData;
+                break;
               }
-              break;
-            case 'S':  // Soft event
-              SoftEvent = VirtualEventData;
               break;
             case 'X':   // Exit state matrix and return data
               MatrixFinished = true;
@@ -481,6 +489,7 @@ void loop()
           }
           // Write events captured to USB (if events were captured)
           if (nCurrentEvents > 0) {
+            SerialUSB.write(1); // Code for returning events
             SerialUSB.write(nCurrentEvents);
             for (int x = 0; x < nCurrentEvents; x++) {
               SerialUSB.write(CurrentEvent[x]);
@@ -496,6 +505,7 @@ void loop()
       UpdatePWMOutputStates();
       SetBNCOutputLines(0); // Reset BNC outputs
       SetWireOutputLines(0); // Reset wire outputs
+      SerialUSB.write(1); // Op Code for sending events
       SerialUSB.write(1); // Read one event
       SerialUSB.write(255); // Send Matrix-end code
       // Send trial-start timestamp (in milliseconds, basically immune to microsecond 32-bit timer wrap-over)
@@ -642,6 +652,10 @@ void setStateOutputs(byte State) {
     SetWireOutputLines(OutputStateMatrix[State][2]);
     Serial1.write(OutputStateMatrix[State][3]);
     Serial2.write(OutputStateMatrix[State][4]);
+    if (OutputStateMatrix[State][5] > 0) {
+      SerialUSB.write(2); // Code for soft-code byte
+      SerialUSB.write(OutputStateMatrix[State][5]); // Code for soft-code byte
+    }
     for (int x = 0; x < 8; x++) {
       analogWrite(PortPWMOutputLines[x], OutputStateMatrix[State][x+9]);
     }

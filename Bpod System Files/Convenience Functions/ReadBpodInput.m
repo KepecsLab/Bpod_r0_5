@@ -13,5 +13,5 @@ switch Target
         error('Target must be equal to ''BNC'', ''Wire'', or ''Port''');
 end
 Message = [Message Channel];
-fwrite(BpodSystem.SerialPort, Message);
+BpodSerialWrite(Message, 'uint8');
 InputStatus = fread(BpodSystem.SerialPort, 1);

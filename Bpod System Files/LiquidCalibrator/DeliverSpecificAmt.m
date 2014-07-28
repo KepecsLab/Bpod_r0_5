@@ -51,7 +51,7 @@ nPulses = 50+(get(handles.nPulsesDropmenu, 'Value')*50);
 set(handles.MeasuredValveText, 'String', num2str(TargetValves(1)));
 drawnow;
 % Call calibration script
-    LiquidRewardCal(nPulses, TargetValves, PulseDurations, 200) 
+    LiquidRewardCal(nPulses, TargetValves, PulseDurations, .2) 
 
     Ok = 1; % Returned from function. If OK=1, system prompts user to enter measurements
 else

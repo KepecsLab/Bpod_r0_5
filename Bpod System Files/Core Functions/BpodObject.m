@@ -34,6 +34,12 @@ classdef BpodObject < handle
         ProtocolPath
         InputConfigPath
         InputsEnabled
+        PluginSerialPorts
+        PluginFigureHandles
+        PluginObjects
+        UsesPsychToolbox
+        SystemSettings
+        SoftCodeHandlerFunction
     end
     
     methods
