@@ -2705,56 +2705,56 @@ Standard 8-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <library name="JoshParts">
 <packages>
 <package name="TDK_LAMBDA_5V_12V">
-<pad name="5VIN" x="-6" y="3" drill="0.8"/>
-<pad name="PWR" x="-6" y="-7.16" drill="0.8"/>
-<pad name="5VGND" x="-6" y="-12.24" drill="0.8"/>
-<pad name="P$4" x="29.8" y="-12.24" drill="0.8"/>
-<pad name="12VGND" x="29.8" y="-7.16" drill="0.8"/>
-<pad name="P$6" x="29.8" y="-2.08" drill="0.8"/>
-<pad name="12VOUT" x="29.8" y="3" drill="0.8"/>
+<pad name="5VIN" x="-6" y="3" drill="0.8" diameter="1.6764"/>
+<pad name="PWR" x="-6" y="-7.16" drill="0.8" diameter="1.6764"/>
+<pad name="5VGND" x="-6" y="-12.24" drill="0.8" diameter="1.6764"/>
+<pad name="P$4" x="29.8" y="-12.24" drill="0.8" diameter="1.6764"/>
+<pad name="12VGND" x="29.8" y="-7.16" drill="0.8" diameter="1.6764"/>
+<pad name="P$6" x="29.8" y="-2.08" drill="0.8" diameter="1.6764"/>
+<pad name="12VOUT" x="29.8" y="3" drill="0.8" diameter="1.6764"/>
 <pad name="P$8" x="-0.8" y="6.4" drill="1.5"/>
 <pad name="P$9" x="24.6" y="-15.92" drill="1.5"/>
-<wire x1="-6.8" y1="3" x2="-6.8" y2="7.6" width="0.127" layer="21"/>
-<wire x1="-6.8" y1="7.6" x2="-6.8" y2="7.8" width="0.127" layer="21"/>
-<wire x1="-6.8" y1="7.8" x2="30.6" y2="7.8" width="0.127" layer="21"/>
-<wire x1="30.6" y1="7.8" x2="30.6" y2="-3.8" width="0.127" layer="21"/>
-<wire x1="30.6" y1="-3.8" x2="30.6" y2="-17.4" width="0.127" layer="21"/>
-<wire x1="30.6" y1="-17.4" x2="-6.8" y2="-17.4" width="0.127" layer="21"/>
-<wire x1="-6.8" y1="-17.4" x2="-6.8" y2="3" width="0.127" layer="21"/>
+<wire x1="-6.985" y1="3" x2="-6.985" y2="7.6" width="0.127" layer="21"/>
+<wire x1="-6.985" y1="7.6" x2="-6.985" y2="7.8" width="0.127" layer="21"/>
+<wire x1="-6.985" y1="7.8" x2="30.861" y2="7.8" width="0.127" layer="21"/>
+<wire x1="30.861" y1="7.8" x2="30.861" y2="-3.8" width="0.127" layer="21"/>
+<wire x1="30.861" y1="-3.8" x2="30.861" y2="-17.4" width="0.127" layer="21"/>
+<wire x1="30.861" y1="-17.4" x2="-6.985" y2="-17.4" width="0.127" layer="21"/>
+<wire x1="-6.985" y1="-17.4" x2="-6.985" y2="3" width="0.127" layer="21"/>
 <text x="7.6" y="-3" size="1.27" layer="21" font="vector">TDK-lamba</text>
 <text x="0.2" y="-7.2" size="1.27" layer="21" font="vector">5V-12V DC/DC Converter</text>
 </package>
 <package name="10POS_SCREW_TERMINAL">
-<pad name="P$1" x="-10" y="-5" drill="1"/>
-<pad name="P$2" x="-5" y="-5" drill="1"/>
-<pad name="P$3" x="0" y="-5" drill="1"/>
-<pad name="P$4" x="5" y="-5" drill="1"/>
-<pad name="P$5" x="10" y="-5" drill="1"/>
-<pad name="P$6" x="-15" y="-5" drill="1"/>
-<pad name="P$7" x="15" y="-5" drill="1"/>
-<pad name="P$8" x="-20" y="-5" drill="1"/>
-<pad name="P$9" x="20" y="-5" drill="1"/>
-<pad name="P$10" x="-25" y="-5" drill="1"/>
-<pad name="P$11" x="-22.5" y="0" drill="1"/>
-<pad name="P$12" x="-17.5" y="0" drill="1"/>
-<pad name="P$13" x="-12.5" y="0" drill="1"/>
-<pad name="P$14" x="-7.5" y="0" drill="1"/>
-<pad name="P$15" x="-2.5" y="0" drill="1"/>
-<pad name="P$16" x="2.5" y="0" drill="1"/>
-<pad name="P$17" x="7.5" y="0" drill="1"/>
-<pad name="P$18" x="12.5" y="0" drill="1"/>
-<pad name="P$19" x="17.5" y="0" drill="1"/>
-<pad name="P$20" x="22.5" y="0" drill="1"/>
+<pad name="P$1" x="-10" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$2" x="-5" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$3" x="0" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$4" x="5" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$5" x="10" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$6" x="-15" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$7" x="15" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$8" x="-20" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$9" x="20" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$10" x="-25" y="-5" drill="1" diameter="1.9304"/>
+<pad name="P$11" x="-22.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$12" x="-17.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$13" x="-12.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$14" x="-7.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$15" x="-2.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$16" x="2.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$17" x="7.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$18" x="12.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$19" x="17.5" y="0" drill="1" diameter="1.9304"/>
+<pad name="P$20" x="22.5" y="0" drill="1" diameter="1.9304"/>
 <wire x1="-28" y1="-8" x2="24" y2="-8" width="0.127" layer="21"/>
 <wire x1="24" y1="-8" x2="24" y2="3.5" width="0.127" layer="21"/>
 <wire x1="24" y1="3.5" x2="-28" y2="3.5" width="0.127" layer="21"/>
 <wire x1="-28" y1="3.5" x2="-28" y2="-8" width="0.127" layer="21"/>
 </package>
 <package name="SQUARE_TRICOLOR_LED">
-<pad name="P$1" x="-5.1" y="5.1" drill="0.8"/>
-<pad name="P$2" x="-5.1" y="0" drill="0.8"/>
-<pad name="P$3" x="0" y="0" drill="0.8"/>
-<pad name="P$4" x="0" y="5.1" drill="0.8"/>
+<pad name="P$1" x="-5.1" y="5.1" drill="0.8" diameter="1.6764"/>
+<pad name="P$2" x="-5.1" y="0" drill="0.8" diameter="1.6764"/>
+<pad name="P$3" x="0" y="0" drill="0.8" diameter="1.6764"/>
+<pad name="P$4" x="0" y="5.1" drill="0.8" diameter="1.6764" rot="R180"/>
 <wire x1="-6" y1="6" x2="-6" y2="-1" width="0.127" layer="21"/>
 <wire x1="-6" y1="-1" x2="0.33" y2="-1" width="0.127" layer="21"/>
 <wire x1="1" y1="6" x2="-6" y2="6" width="0.127" layer="21"/>
