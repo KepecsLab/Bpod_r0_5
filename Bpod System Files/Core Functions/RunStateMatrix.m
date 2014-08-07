@@ -5,7 +5,7 @@ if isempty(BpodSystem.StateMatrix)
 end
 RawTrialEvents = struct;
 if BpodSerialBytesAvailable > 0
-        trash = fread(BpodSystem.SerialPort.BytesAvailable);
+    trash = fread(BpodSystem.SerialPort.BytesAvailable);
 end
 BpodSerialWrite('R', 'uint8'); % Send the code to run the loaded matrix (character "R" for Run)
 BpodSystem.CurrentStateCode = 2;
@@ -27,7 +27,6 @@ UpdateBpodCommanderGUI; % Reads BpodSystem.HardwareState and BpodSystem.LastEven
 set(BpodSystem.GUIHandles.RunButton, 'CData', BpodSystem.Graphics.PauseButton);
 BpodSystem.BeingUsed = 1; BpodSystem.InStateMatrix = 1;
 while MatrixFinished == 0
-    drawnow;
     if BpodSerialBytesAvailable > 0
         opCodeBytes = BpodSerialRead(2, 'uint8');
         opCode = opCodeBytes(1);
@@ -47,7 +46,7 @@ while MatrixFinished == 0
                 else
                     NewState = GlobalCounterMatrix(BpodSystem.CurrentStateCode, DominantEvent-44);
                 end
-                
+                SetBpodHardwareMirror2ReflectEvent(CurrentEvent);
                 if NewState ~= BpodSystem.CurrentStateCode
                     if  NewState <= nTotalStates
                         StateChangeIndexes(nStates) = nEvents+1;
@@ -56,20 +55,20 @@ while MatrixFinished == 0
                         BpodSystem.CurrentStateCode = NewState;
                         BpodSystem.CurrentStateName = StateNames{NewState};
                         SetBpodHardwareMirror2CurrentState(NewState);
-                        UpdateBpodCommanderGUI;
                     end
                 end
+                UpdateBpodCommanderGUI;
                 BpodSystem.LastEvent = EventNames{DominantEvent};
                 Events(nEvents+1:(nEvents+nCurrentEvents)) = CurrentEvent(1:nCurrentEvents);
                 CurrentEvent(1:nCurrentEvents) = 0;
                 set(BpodSystem.GUIHandles.LastEventDisplay, 'string', BpodSystem.LastEvent);
                 nEvents = nEvents + nCurrentEvents;
-                drawnow;
             case 2 % Soft-code
                 SoftCode = opCodeBytes(2);
                 HandleSoftCode(SoftCode);
         end
     else
+        drawnow;
         if BpodSystem.BeingUsed == 0
             MatrixFinished = 1;
         end
@@ -111,7 +110,7 @@ UpdateBpodCommanderGUI;
 BpodSystem.InStateMatrix = 0;
 
 function MilliOutput = Round2Millis(DecimalInput)
-    MilliOutput = round(DecimalInput*(10^3))/(10^3);
+MilliOutput = round(DecimalInput*(10^3))/(10^3);
 
 function SetBpodHardwareMirror2CurrentState(CurrentState)
 global BpodSystem
@@ -120,11 +119,6 @@ if CurrentState > 0
     for x = 1:8
         ThisValveState = bitget(ValveState,x);
         BpodSystem.HardwareState.Valves(x) = ThisValveState;
-        if ThisValveState == 0
-            set(BpodSystem.GUIHandles.PortValveButton(x), 'CData', BpodSystem.Graphics.OffButton);
-        else
-            set(BpodSystem.GUIHandles.PortValveButton(x), 'CData', BpodSystem.Graphics.OnButton);
-        end
     end
     BNCState = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 2);
     for x = 1:2
@@ -134,9 +128,75 @@ if CurrentState > 0
     for x = 1:4
         BpodSystem.HardwareState.WireOutputs(x) = bitget(WireState,x);
     end
+    BpodSystem.HardwareState.PWMLines(1:8) = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 10:17);
 else
     BpodSystem.HardwareState.Valves = zeros(1,8);
     BpodSystem.HardwareState.PortSensors = zeros(1,8);
     BpodSystem.HardwareState.BNCOutputs = zeros(1,2);
     BpodSystem.HardwareState.WireOutputs = zeros(1,4);
+    BpodSystem.HardwareState.PWMLines = zeros(1,8);
+end
+
+function SetBpodHardwareMirror2ReflectEvent(Events)
+global BpodSystem
+nEvents = sum(Events ~= 0);
+for x = 1:nEvents
+    switch Events(x)
+        case 1
+            BpodSystem.HardwareState.PortSensors(1) = 1;
+        case 2
+            BpodSystem.HardwareState.PortSensors(1) = 0;
+        case 3
+            BpodSystem.HardwareState.PortSensors(2) = 1;
+        case 4
+            BpodSystem.HardwareState.PortSensors(2) = 0;
+        case 5
+            BpodSystem.HardwareState.PortSensors(3) = 1;
+        case 6
+            BpodSystem.HardwareState.PortSensors(3) = 0;
+        case 7
+            BpodSystem.HardwareState.PortSensors(4) = 1;
+        case 8
+            BpodSystem.HardwareState.PortSensors(4) = 0;
+        case 9
+            BpodSystem.HardwareState.PortSensors(5) = 1;
+        case 10
+            BpodSystem.HardwareState.PortSensors(5) = 0;
+        case 11
+            BpodSystem.HardwareState.PortSensors(6) = 1;
+        case 12
+            BpodSystem.HardwareState.PortSensors(6) = 0;
+        case 13
+            BpodSystem.HardwareState.PortSensors(7) = 1;
+        case 14
+            BpodSystem.HardwareState.PortSensors(7) = 0;
+        case 15
+            BpodSystem.HardwareState.PortSensors(8) = 1;
+        case 16
+            BpodSystem.HardwareState.PortSensors(8) = 0;
+        case 17
+            BpodSystem.HardwareState.BNCInputs(1) = 1;
+        case 18
+            BpodSystem.HardwareState.BNCInputs(1) = 0;
+        case 19
+            BpodSystem.HardwareState.BNCInputs(2) = 1;
+        case 20
+            BpodSystem.HardwareState.BNCInputs(2) = 0;
+        case 21
+            BpodSystem.HardwareState.WireInputs(1) = 1;
+        case 22
+            BpodSystem.HardwareState.WireInputs(1) = 0;
+        case 23
+            BpodSystem.HardwareState.WireInputs(2) = 1;
+        case 24
+            BpodSystem.HardwareState.WireInputs(2) = 0;
+        case 25
+            BpodSystem.HardwareState.WireInputs(3) = 1;
+        case 26
+            BpodSystem.HardwareState.WireInputs(3) = 0;
+        case 27
+            BpodSystem.HardwareState.WireInputs(4) = 1;
+        case 28
+            BpodSystem.HardwareState.WireInputs(4) = 0;
+    end
 end

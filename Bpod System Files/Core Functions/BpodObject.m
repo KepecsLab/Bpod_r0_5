@@ -11,6 +11,7 @@ classdef BpodObject < handle
         LastEvent
         LastTrialData
         SessionData
+        LastHardwareState
         HardwareState
         BNCOverrideState
         GUIHandles

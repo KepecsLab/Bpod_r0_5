@@ -86,6 +86,7 @@ catch
     BpodSystem.HardwareState.BNCOutputs = zeros(1,2);
     BpodSystem.HardwareState.WireInputs = zeros(1,4);
     BpodSystem.HardwareState.WireOutputs = zeros(1,4);
+    BpodSystem.LastHardwareState = BpodSystem.HardwareState;
     BpodSystem.BNCOverrideState = zeros(1,4);
     BpodSystem.EventNames = {'Port1In', 'Port1Out', 'Port2In', 'Port2Out', 'Port3In', 'Port3Out', 'Port4In', 'Port4Out', 'Port5In', 'Port5Out', ... 
                              'Port6In', 'Port6Out', 'Port7In', 'Port7Out', 'Port8In', 'Port8Out', 'BNC1High', 'BNC1Low', 'BNC2High', 'BNC2Low', ... 

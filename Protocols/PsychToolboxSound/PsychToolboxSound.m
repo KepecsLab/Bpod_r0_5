@@ -24,22 +24,21 @@ MaxTrials = 5000;
 TrialTypes = ceil(rand(1,MaxTrials)*2);
 
 %% Initialize plots
-BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [600 700 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
 BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.05 .2 .9 .7]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
 
 %% Define stimuli and send to sound server
-SF = 96000;
-%SF = 192000; % Sound card sampling rate
+SF = 192000; % Sound card sampling rate
 LeftSound = GenerateSineWave(SF, S.GUI.SinWaveFreqLeft, S.GUI.SoundDuration); % Sampling freq (hz), Sine frequency (hz), duration (s)
 RightSound = GenerateSineWave(SF, S.GUI.SinWaveFreqRight, S.GUI.SoundDuration); % Sampling freq (hz), Sine frequency (hz), duration (s)
 PunishSound = (rand(1,SF*.5)*2) - 1;
 % Generate early withdrawal sound
 W1 = GenerateSineWave(SF, 1000, .5); W2 = GenerateSineWave(SF, 1200, .5); EarlyWithdrawalSound = W1+W2;
-P = 1000;
-for x = 1:24
-    EarlyWithdrawalSound(P:P+1000) = 0;
-    P = P+2000;
+P = SF/100; Interval = P;
+for x = 1:50
+    EarlyWithdrawalSound(P:P+Interval) = 0;
+    P = P+(Interval*2);
 end
 
 % Program sound server

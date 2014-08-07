@@ -1,7 +1,6 @@
 function PsychToolboxSoundServer(Function, varargin)
 global BpodSystem
-%SF = 192000; % Sound card sampling rate
-SF = 96000;
+SF = 192000; % Sound card sampling rate
 nSlaves = 10;
 Function = lower(Function);
 switch Function
@@ -32,7 +31,8 @@ switch Function
         elseif ismac
         else
             for x = 1:nDevices
-                if ~isempty(strfind(AudioDevices(x).DeviceName, 'Xonar STX: Multichannel')) % Assumes ASUS Xonar STX Soundcard
+                if ~isempty(strfind(AudioDevices(x).DeviceName, 'Xonar DX: Multichannel')) % Assumes ASUS Xonar DX Soundcard    
+                %if ~isempty(strfind(AudioDevices(x).DeviceName, 'Xonar U7')) % Assumes ASUS Xonar U7 Soundcard
                     nCandidates = nCandidates + 1;
                     CandidateDevices(nCandidates) = AudioDevices(x).DeviceIndex;
                 end
@@ -43,7 +43,7 @@ switch Function
             for x = 1:nCandidates
                 disp(['Candidate device found! Trying candidate ' num2str(x) ' of ' num2str(nCandidates)])
                 try
-                    CandidateDevice = PsychPortAudio('Open', CandidateDevices(x), 9, 4, SF, 3 , 32, 1, [0 1 3]);
+                    CandidateDevice = PsychPortAudio('Open', CandidateDevices(x), 9, 4, SF, 8 , 32);
                     BpodSystem.SystemSettings.SoundDeviceID = CandidateDevices(x);
                     SaveBpodSystemSettings;
                     PsychPortAudio('Close', CandidateDevice);
@@ -55,11 +55,14 @@ switch Function
         else
             disp('Error: no compatible sound subsystem detected. On Windows, ensure ASIO drivers are installed.')
         end
-        BpodSystem.PluginObjects.SoundServer.MasterOutput = PsychPortAudio('Open', BpodSystem.SystemSettings.SoundDeviceID, 9, 4, SF, 3 , 32, 1, [0 1 3]);
+        BpodSystem.PluginObjects.SoundServer.MasterOutput = PsychPortAudio('Open', BpodSystem.SystemSettings.SoundDeviceID, 9, 4, SF, 8 , 32);
         PsychPortAudio('Start', BpodSystem.PluginObjects.SoundServer.MasterOutput, 0, 0, 1);
         for x = 1:nSlaves
             BpodSystem.PluginObjects.SoundServer.SlaveOutput(x) = PsychPortAudio('OpenSlave', BpodSystem.PluginObjects.SoundServer.MasterOutput);
         end
+        Data = zeros(8,192);
+        PsychPortAudio('FillBuffer', BpodSystem.PluginObjects.SoundServer.SlaveOutput(1), Data);
+        PsychPortAudio('Start', BpodSystem.PluginObjects.SoundServer.SlaveOutput(1));
         disp('PsychToolbox sound server successfully initialized.')
     case 'close'
         PsychPortAudio('Close');
@@ -74,7 +77,8 @@ switch Function
         if Siz(1) == 1 % If mono, send the same signal on both channels
             Data(2,:) = Data;
         end
-        Data(3,:) = ones(1,Siz(2));
+        Data(3:8,:) = zeros(6,Siz(2))*5;
+        Data(3:8,1:(SF/1000)) = ones(6,(SF/1000));
         PsychPortAudio('FillBuffer', BpodSystem.PluginObjects.SoundServer.SlaveOutput(SlaveID), Data);
     case 'play'
         SlaveID = varargin{1};

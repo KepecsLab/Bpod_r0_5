@@ -13,13 +13,13 @@ if ispc
 elseif ismac
     
 else
-%     [~, CandidatePorts] = system('ls /dev/tty*');
-%     PortNameStartPos = strfind(CandidatePorts, '/dev/ttyACM');
-%     nPorts = length(PortNameStartPos);
-%     Ports = []; nPortsFound = 0;
-%     ArduinoPorts = cell(1,1);
-%     for x = 1:nPorts
-%         ArduinoPorts{x} = strtrim(CandidatePorts(PortNameStartPos(x):PortNameStartPos(x)+12))
-%     end
-ArduinoPorts = {'/dev/ttyS101'};
+    [~, CandidatePorts] = system('ls /dev/tty*');
+    PortNameStartPos = strfind(CandidatePorts, '/dev/ttyACM');
+    nPorts = length(PortNameStartPos);
+    Ports = []; nPortsFound = 0;
+    ArduinoPorts = cell(1,1);
+    for x = 1:nPorts
+        ArduinoPorts{x} = strtrim(CandidatePorts(PortNameStartPos(x):PortNameStartPos(x)+12));
+    end
+% ArduinoPorts = {'/dev/ttyS101'};
 end

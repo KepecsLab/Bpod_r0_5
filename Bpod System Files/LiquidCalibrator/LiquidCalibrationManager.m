@@ -496,15 +496,15 @@ if nValidValves > 0
     CalFig = figure('Name', 'Valve Calibration Curve-fits','numbertitle','off', 'MenuBar', 'none');
     switch nValidValves
         case 1
-            set(CalFig, 'Position', [150 400 600 450]);
+            set(CalFig, 'Position', [150 200 600 450]);
         case 2
-            set(CalFig, 'Position', [150 378 1200 450]);
+            set(CalFig, 'Position', [150 200 1200 450]);
         case 3
-            set(CalFig, 'Position', [150 378 1200 400]);
+            set(CalFig, 'Position', [150 200 1200 400]);
         case 4
-            set(CalFig, 'Position', [50 378 1200 300]);
+            set(CalFig, 'Position', [50 278 1200 300]);
         case 5
-            set(CalFig, 'Position', [50 378 1200 200]);
+            set(CalFig, 'Position', [50 278 1200 200]);
         case 6
             set(CalFig, 'Position', [50 378 1200 200]);
         case 7
