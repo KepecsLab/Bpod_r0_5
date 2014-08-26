@@ -1,4 +1,4 @@
 function SaveBpodSessionData
 global BpodSystem
 SessionData = BpodSystem.Data;
-save(BpodSystem.DataPath, 'SessionData');
+save(BpodSystem.DataPath, 'SessionData', '-v6');
