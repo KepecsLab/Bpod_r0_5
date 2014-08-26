@@ -4007,12 +4007,6 @@ design rules under a new name.</description>
 <wire x1="40.8559" y1="20.0279" x2="39.37" y2="17.526" width="0.254" layer="1"/>
 <wire x1="33.0569" y1="9.398" x2="32.385" y2="9.398" width="0.254" layer="16"/>
 <wire x1="64.77" y1="25.908" x2="64.77" y2="25.0571" width="0.254" layer="1"/>
-<wire x1="136.83" y1="11.3638" x2="136.0352" y2="10.569" width="0.254" layer="16"/>
-<wire x1="136.0352" y1="10.569" x2="135.0099" y2="10.569" width="0.254" layer="16"/>
-<wire x1="135.0099" y1="10.569" x2="134.8119" y2="10.767" width="0.254" layer="16"/>
-<wire x1="134.8119" y1="10.767" x2="133.7399" y2="10.767" width="0.254" layer="16"/>
-<wire x1="133.7399" y1="10.767" x2="132.3709" y2="9.398" width="0.254" layer="16"/>
-<wire x1="132.3709" y1="9.398" x2="131.699" y2="9.398" width="0.254" layer="16"/>
 <wire x1="90.17" y1="22.606" x2="92.71" y2="22.606" width="0.762" layer="1"/>
 <wire x1="92.71" y1="22.606" x2="95.854" y2="23.32" width="0.762" layer="1"/>
 <wire x1="95.854" y1="28.4" x2="95.854" y2="23.32" width="0.762" layer="16"/>
@@ -4398,7 +4392,6 @@ design rules under a new name.</description>
 <contactref element="VALVE_REGISTER" pad="12"/>
 <contactref element="PORT8" pad="7"/>
 <wire x1="134.239" y1="9.398" x2="134.8515" y2="9.398" width="0.254" layer="1"/>
-<wire x1="134.8515" y1="9.398" x2="136.8578" y2="11.4043" width="0.254" layer="1"/>
 <wire x1="136.8578" y1="11.4043" x2="136.8578" y2="12.4646" width="0.254" layer="1"/>
 <wire x1="136.8578" y1="12.4646" x2="127.1935" y2="22.1289" width="0.254" layer="1"/>
 <wire x1="127.1935" y1="22.1289" x2="103.0241" y2="22.1289" width="0.254" layer="1"/>
@@ -4411,6 +4404,7 @@ design rules under a new name.</description>
 <wire x1="96.393" y1="25.908" x2="97.409" y2="24.892" width="0.254" layer="1"/>
 <wire x1="97.409" y1="24.892" x2="100.261" y2="24.892" width="0.254" layer="1"/>
 <wire x1="100.261" y1="24.892" x2="103.0241" y2="22.1289" width="0.254" layer="1"/>
+<wire x1="136.8578" y1="11.4043" x2="134.8515" y2="9.398" width="0.254" layer="1"/>
 </signal>
 <signal name="5V">
 <contactref element="VALVE_REGISTER" pad="17"/>

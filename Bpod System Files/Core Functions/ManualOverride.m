@@ -1,86 +1,48 @@
 function ManualOverride(TargetCode, ChannelCode)
 global BpodSystem
 
-%% Determine which graphics element to update
-% switch TargetCode
-%     case 1
-%         ButtonHandle = BpodSystem.GUIHandles.PortValveButton(ChannelCode);
-%     case 2
-%         ButtonHandle = BpodSystem.GUIHandles.PortLEDButton(ChannelCode);
-%     case 3
-%         ButtonHandle = BpodSystem.GUIHandles.PortvPokeButton(ChannelCode);
-%     case 4
-%         ButtonHandle = BpodSystem.GUIHandles.BNCInputButton(ChannelCode);
-%     case 5
-%         ButtonHandle = BpodSystem.GUIHandles.BNCOutputButton(ChannelCode);
-%     case 6
-%         ButtonHandle = BpodSystem.GUIHandles.InputWireButton(ChannelCode);
-%     case 7
-%         ButtonHandle = BpodSystem.GUIHandles.OutputWireButton(ChannelCode);
-%     case 8
-%         ButtonHandle = BpodSystem.GUIHandles.SoftTriggerButton;
-%     case 9
-%         ButtonHandle = BpodSystem.GUIHandles.HWSerialTriggerButton1;
-%     case 10
-%         ButtonHandle = BpodSystem.GUIHandles.HWSerialTriggerButton2;
-% end
-
 %% Determine the new state of the system
 switch TargetCode
     case 1
         if BpodSystem.HardwareState.Valves(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.Valves(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.Valves(ChannelCode) = 0;
         end
     case 2
         if BpodSystem.HardwareState.PWMLines(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.PWMLines(ChannelCode) = 255;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.PWMLines(ChannelCode) = 0;
         end
     case 3
         if BpodSystem.HardwareState.PortSensors(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.PortSensors(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.PortSensors(ChannelCode) = 0;
         end
     case 4
         if BpodSystem.HardwareState.BNCInputs(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.BNCInputs(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.BNCInputs(ChannelCode) = 0;
         end
     case 5
         if BpodSystem.HardwareState.BNCOutputs(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.BNCOutputs(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.BNCOutputs(ChannelCode) = 0;
         end
     case 6
         if BpodSystem.HardwareState.WireInputs(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.WireInputs(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.WireInputs(ChannelCode) = 0;
         end
     case 7
         if BpodSystem.HardwareState.WireOutputs(ChannelCode) == 0
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OnButton);
             BpodSystem.HardwareState.WireOutputs(ChannelCode) = 1;
         else
-            %set(ButtonHandle, 'CData', BpodSystem.Graphics.OffButton);
             BpodSystem.HardwareState.WireOutputs(ChannelCode) = 0;
         end
 end
