@@ -1,4 +1,8 @@
 function PsychToolboxSoundServer(Function, varargin)
+% Note: On some Ubuntu systems with Xonar DX, L&R audio seem to be remapped
+% to the third plug on the card (from the second plug where they're
+% supposed to be). A modified version of this plugin for those systems is
+% available upon request. -JS 8/27/2014
 global BpodSystem
 SF = 192000; % Sound card sampling rate
 nSlaves = 10;
@@ -77,8 +81,8 @@ switch Function
         if Siz(1) == 1 % If mono, send the same signal on both channels
             Data(2,:) = Data;
         end
-        Data(3:8,:) = zeros(2,Siz(2))*5;
-        Data(3:8,1:(SF/1000)) = ones(2,(SF/1000));
+        Data(3:4,:) = zeros(2,Siz(2));
+        Data(3:4,1:(SF/1000)) = ones(2,(SF/1000));
         PsychPortAudio('FillBuffer', BpodSystem.PluginObjects.SoundServer.SlaveOutput(SlaveID), Data);
     case 'play'
         SlaveID = varargin{1};
