@@ -1,4 +1,23 @@
-function InitializeHardware
+%{
+----------------------------------------------------------------------------
+
+This file is part of the Bpod Project
+Copyright (C) 2014 Joshua I. Sanders, Cold Spring Harbor Laboratory, NY, USA
+
+----------------------------------------------------------------------------
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3.
+
+This program is distributed  WITHOUT ANY WARRANTY and without even the 
+implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%}
+function InitializeHardware (varargin)
 
 global BpodSystem
 BaudRate = 115200;
@@ -13,23 +32,29 @@ if ~isempty(BpodSystem.SerialPort)
 end
 
 loadBpodPath
-Ports = FindArduinoPorts;
 
-if isempty(Ports)
-    error('Error: Bpod not found.');
-end
-
-% Make it search on the last successful port first
-if isfield(BpodSystem.SystemSettings, 'LastCOMPort')
-    LastCOMPort = BpodSystem.SystemSettings.LastCOMPort;
-    pos = strmatch(LastCOMPort, Ports, 'exact');
-    if ~isempty(pos)
-        Temp = Ports;
-        Ports{1} = LastCOMPort;
-        Ports(2:length(Temp)) = Temp(find(1:length(Temp) ~= pos));
+if nargin > 0
+    Ports = cell(1,1);
+    Ports{1} = varargin{1};
+else
+    
+    Ports = FindArduinoPorts;
+    
+    if isempty(Ports)
+        error('Error: Bpod not found.');
+    end
+    
+    % Make it search on the last successful port first
+    if isfield(BpodSystem.SystemSettings, 'LastCOMPort')
+        LastCOMPort = BpodSystem.SystemSettings.LastCOMPort;
+        pos = strmatch(LastCOMPort, Ports, 'exact');
+        if ~isempty(pos)
+            Temp = Ports;
+            Ports{1} = LastCOMPort;
+            Ports(2:length(Temp)) = Temp(find(1:length(Temp) ~= pos));
+        end
     end
 end
-
 Found = 0;
 x = 0;
 switch BpodSystem.UsesPsychToolbox

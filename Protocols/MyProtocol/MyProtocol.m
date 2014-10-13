@@ -1,6 +1,7 @@
 function MyProtocol % On each trial, at random, either port 1 or 3 will blink.
 global BpodSystem % Allows access to Bpod device from this function
 TrialTypes = ceil(rand(1,5000)*2); % Make 5000 future trial types
+BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 for currentTrial = 1:5000
     pause(0.5) % delay between trials so light flashes are visible
     disp(['Trial#' num2str(currentTrial) ' TrialType ' num2str(TrialTypes(currentTrial))]) % Print trial details to screen
@@ -17,6 +18,7 @@ for currentTrial = 1:5000
     SendStateMatrix(sma); RawEvents = RunStateMatrix; % Send and run state matrix
     if ~isempty(fieldnames(RawEvents)) % If trial data was returned
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents); % Computes trial events from raw data
+        BpodSystem.Data.TrialTypes(currentTrial) = TrialTypes(currentTrial); % Adds the current trial type to data
         SaveBpodSessionData; % Saves the field BpodSystem.Data to the current data file
     end
     if BpodSystem.BeingUsed == 0

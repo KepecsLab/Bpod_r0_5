@@ -17,35 +17,33 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
-function Click2AFC
-% This protocol demonstrates the Poisson Click task using Pulse Pal. 
+function Olfactory2AFC
+% This protocol demonstrates control of Matt Rechia's olfactometer by using the hardware serial port to control an Arduino Leonardo Ethernet client. 
 % Written by Josh Sanders, 10/2014.
 %
 % SETUP
 % You will need:
-% - A Pulse Pal with software installed on this computer
-% - A BNC cable between Bpod's BNC Output 1 and Pulse Pal's Trigger channel 1
-% - Left and right speakers connected to Pulse Pal's output channels 1 and 2 respectively
+% - Matt Rechia's olfactometer
+% - Arduino Leonardo double-stacked with the Arduino Ethernet shield and the Bpod shield
+% - This computer connected to the olfactometer's Ethernet router
+% - The Ethernet shield connected to the same router
+% - Arduino Leonardo connected to this computer (note its COM port)
+% - Arduino Leonardo programmed with the Serial Ethernet firmware (in /Bpod Firmware/SerialEthernetModule/)
 
 global BpodSystem
 
 %% Define parameters
 S = BpodSystem.ProtocolSettings; % Load settings chosen in launch manager into current workspace as a struct called S
 if isempty(fieldnames(S))  % If settings file was an empty struct, populate struct with default settings
-    S.GUI.StimulusDelayDuration = 0; % Duration of initial delay (s)
-    S.GUI.TimeForResponse = 3; % Time after sampling for subject to respond (s)
-    S.GUI.RewardAmount = 5; % amount of large reward delivered to the mouse in microliters
-    S.GUI.TimeoutDuration = 2; % Duration of punishment timeout (s)
-    S.GUI.StimulusDuration = 3; % Duration of the sound
+    S.GUI.RewardAmount = 5;
+    S.GUI.StimulusDelayDuration = 0;
+    S.GUI.MaxOdorDuration = 1;
+    S.GUI.TimeForResponse = 5;
+    S.GUI.TimeoutDuration = 2;
 end
 
 % Initialize parameter GUI plugin
 BpodParameterGUI('init', S);
-
-%% Initialize and program Pulse Pal
-PulsePal
-load Click2AFCPulsePalProgram.mat
-ProgramPulsePal(ParameterMatrix);
 
 %% Define trials
 MaxTrials = 5000;
@@ -53,27 +51,43 @@ TrialTypes = ceil(rand(1,MaxTrials)*2);
 BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 
 %% Initialize plots
-BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [600 700 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
 BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.05 .2 .9 .7]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
 
+%% Initialize Ethernet client on hardware serial port 1 and connect to olfactometer
+SerialEthernet('Init', 'COM65'); % Set this to the correct COM port for Arduino Leonardo
+pause(1);
+OlfIP = [192 168 0 104];
+SerialEthernet('Connect', OlfIP, 3336);
+SerialEthernet('MessageMode', 1); % Force a connection release/renew after each string sent from the Ethernet module (necessary to prevent crashes for the Rechia olfactometer)
+
+%% Define odors, program Ethernet server with commands for switching olfactometer valves
+LeftOdor = [90 10]; % Flow rate on Banks 1 and 2 in ml/min
+RightOdor = [10 90];
+ValveOpenCommand = Valves2EthernetString('Bank1', 1, 'Bank2', 1); % From RechiaOlfactometer plugin. Simultaneously sets banks 1 and 2 to valve 1
+ValveCloseCommand = Valves2EthernetString('Bank1', 0, 'Bank2', 0); % Simultaneously sets banks 1 and 2 to valve 0 (exhaust)
+SerialEthernet('LoadString', 1, ValveOpenCommand); % Sets the "open" command as string 1
+SerialEthernet('LoadString', 2, ValveCloseCommand); % Sets the "close" command as string 2
+
 %% Main trial loop
-for currentTrial = 1:MaxTrials 
+for currentTrial = 1:MaxTrials
     S = BpodParameterGUI('sync', S); % Sync parameters with BpodParameterGUI plugin
+    if TrialTypes(currentTrial) == 1
+        SetBankFlowRate(OlfIP, 1, LeftOdor(1)); % Set bank 1 to 100ml/min (requires Bpod computer on same ethernet network as olfactometer)
+        SetBankFlowRate(OlfIP, 2, LeftOdor(2)); % Set bank 2 to 0ml/min
+    else
+        SetBankFlowRate(OlfIP, 1, RightOdor(1)); % Set bank 1 to 100ml/min
+        SetBankFlowRate(OlfIP, 2, RightOdor(2)); % Set bank 2 to 0ml/min
+    end
     R = GetValveTimes(S.GUI.RewardAmount, [1 3]); LeftValveTime = R(1); RightValveTime = R(2); % Update reward amounts
-    FastClickTrain = GeneratePoissonClickTrain_PulsePal(20, S.GUI.StimulusDuration);
-    SlowClickTrain = GeneratePoissonClickTrain_PulsePal(10, S.GUI.StimulusDuration);
     switch TrialTypes(currentTrial) % Determine trial-specific state matrix fields
-        case 1 
+        case 1
             LeftActionState = 'Reward'; RightActionState = 'Punish';
             ValveCode = 1; ValveTime = LeftValveTime;
-            SendCustomPulseTrain(2, FastClickTrain, ones(1,length(FastClickTrain))*5);
-            SendCustomPulseTrain(1, SlowClickTrain, ones(1,length(SlowClickTrain))*5);
         case 2
             LeftActionState = 'Punish'; RightActionState = 'Reward';
             ValveCode = 4; ValveTime = RightValveTime;
-            SendCustomPulseTrain(2, SlowClickTrain, ones(1,length(SlowClickTrain))*5);
-            SendCustomPulseTrain(1, FastClickTrain, ones(1,length(FastClickTrain))*5);
     end
     sma = NewStateMatrix(); % Assemble state matrix
     sma = AddState(sma, 'Name', 'WaitForCenterPoke', ...
@@ -85,21 +99,13 @@ for currentTrial = 1:MaxTrials
         'StateChangeConditions', {'Tup', 'DeliverStimulus'},...
         'OutputActions', {}); 
     sma = AddState(sma, 'Name', 'DeliverStimulus', ...
-        'Timer', S.GUI.StimulusDuration,...
-        'StateChangeConditions', {'Tup', 'WaitForResponse', 'Port2Out', 'KillSound'},...
-        'OutputActions', {'BNCState', 1});
-    sma = AddState(sma, 'Name', 'KillSound', ...
-        'Timer', .0005,...
-        'StateChangeConditions', {'Tup', 'KillSound2'},...
-        'OutputActions', {'BNCState', 0});
-    sma = AddState(sma, 'Name', 'KillSound2', ...
-        'Timer', .0005,...
-        'StateChangeConditions', {'Tup', 'WaitForResponse'},...
-        'OutputActions', {'BNCState', 1});
+        'Timer', S.GUI.MaxOdorDuration,...
+        'StateChangeConditions', {'Tup', 'WaitForResponse', 'Port2Out', 'WaitForResponse'},...
+        'OutputActions', {'Serial1Code', 1}); 
     sma = AddState(sma, 'Name', 'WaitForResponse', ...
         'Timer', S.GUI.TimeForResponse,...
         'StateChangeConditions', {'Tup', 'exit', 'Port1In', LeftActionState, 'Port3In', RightActionState},...
-        'OutputActions', {'PWM1', 255, 'PWM3', 255});
+        'OutputActions', {'Serial1Code', 2, 'PWM1', 255, 'PWM3', 255});
     sma = AddState(sma, 'Name', 'Reward', ...
         'Timer', ValveTime,...
         'StateChangeConditions', {'Tup', 'exit'},...
@@ -107,7 +113,11 @@ for currentTrial = 1:MaxTrials
     sma = AddState(sma, 'Name', 'Punish', ...
         'Timer', S.GUI.TimeoutDuration,...
         'StateChangeConditions', {'Tup', 'exit'},...
-        'OutputActions', {'Serial1Code', 3});
+        'OutputActions', {});
+    sma = AddState(sma, 'Name', 'EarlyWithdrawalPunish', ...
+        'Timer', S.GUI.TimeoutDuration,...
+        'StateChangeConditions', {'Tup', 'exit'},...
+        'OutputActions', {});
     SendStateMatrix(sma);
     RawEvents = RunStateMatrix;
     if ~isempty(fieldnames(RawEvents)) % If trial data was returned
