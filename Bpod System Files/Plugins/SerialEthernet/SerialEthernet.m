@@ -19,8 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 function SerialEthernet(Command, varargin)
 global BpodSystem
+Command = lower(Command);
 switch Command
-    case 'Init'
+    case 'init'
         ComPort = varargin{1};
         if ~isfield(BpodSystem.PluginSerialPorts, 'SerialEthernetPort')
             BpodSystem.PluginSerialPorts.SerialEthernetPort = serial(ComPort, 'BaudRate', 115200, 'Timeout', 1, 'DataTerminalReady', 'on');
@@ -37,7 +38,7 @@ switch Command
             error('SerialEthernet port successfully opened but SerialEthernet module did not acknowledge transmission')
         end
         disp(['SerialEthernet client opened on port ' ComPort])
-    case 'Connect'
+    case 'connect'
         RemoteIP = varargin{1};
         RemotePort = varargin{2};
         IPString = [num2str(RemoteIP(1)) '.' num2str(RemoteIP(2)) '.' num2str(RemoteIP(3)) '.' num2str(RemoteIP(4))];
@@ -48,17 +49,17 @@ switch Command
             error('Error connecting to remote Ethernet server')
         end
         disp(['SerialEthernet connected to server on IP: ' IPString])
-    case 'LoadString'
+    case 'loadstring'
         StringNum = varargin{1};
         String = varargin{2};
         fwrite(BpodSystem.PluginSerialPorts.SerialEthernetPort, ['L' StringNum length(String) String], 'uint8');
-    case 'TriggerString'
+    case 'triggerstring'
         StringNum = varargin{1};
         fwrite(BpodSystem.PluginSerialPorts.SerialEthernetPort, ['T' StringNum], 'uint8');
-    case 'MessageMode'
+    case 'messagemode'
         Mode = varargin{1};
         fwrite(BpodSystem.PluginSerialPorts.SerialEthernetPort, ['M' Mode], 'uint8');
-    case 'Close'
+    case 'close'
         fwrite(BpodSystem.PluginSerialPorts.SerialEthernetPort, 'X', 'uint8');
         pause(.1);
         fclose(BpodSystem.PluginSerialPorts.SerialEthernetPort);

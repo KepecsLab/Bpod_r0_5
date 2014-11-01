@@ -64,8 +64,8 @@ switch Action
         
         %plot in specified axes
         scatter(AxesHandle,  1:nTrialsToShow, SideList(1:nTrialsToShow),'MarkerFaceColor','b','MarkerEdgeColor', 'b');
-        set(AxesHandle,'TickDir', 'out','YLim', [-1, 2], 'YTick', [0 1],'YTickLabel', { 'Right','Left'});
-        
+        set(AxesHandle,'TickDir', 'out','YLim', [-1, 2], 'YTick', [0 1],'YTickLabel', { 'Right','Left'}, 'FontSize', 16);
+        xlabel(AxesHandle, 'Trial#', 'FontSize', 18);
         hold(AxesHandle, 'on');
         
     case 'update'
@@ -91,20 +91,22 @@ switch Action
         %Plot past trials
         if ~isempty(OutcomeRecord)
             indxToPlot = mn:CurrentTrial-1;
-            
-            %Plot Correct
-            CorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 1);
-            scatter(AxesHandle,  indxToPlot(CorrectTrialsIndx), SideList(indxToPlot(CorrectTrialsIndx)),'MarkerFaceColor','g','MarkerEdgeColor', 'g');
-            %Plot Incorrect
-            InCorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 0);
-            scatter(AxesHandle,  indxToPlot(InCorrectTrialsIndx), SideList(indxToPlot(InCorrectTrialsIndx)),'MarkerFaceColor','r','MarkerEdgeColor', 'r');
-            %Plot EarlyWithdrawals
+            %Plot Error, unpunished
             EarlyWithdrawalTrialsIndx =(OutcomeRecord(indxToPlot) == -1);
             scatter(AxesHandle,  indxToPlot(EarlyWithdrawalTrialsIndx), SideList(indxToPlot(EarlyWithdrawalTrialsIndx)),'ro','MarkerFaceColor',[1 1 1]);
-            %Plot DidNotChoose
+            %Plot Error, punished
+            InCorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 0);
+            scatter(AxesHandle,  indxToPlot(InCorrectTrialsIndx), SideList(indxToPlot(InCorrectTrialsIndx)),'MarkerFaceColor','r','MarkerEdgeColor', 'r');
+            %Plot Correct, rewarded
+            CorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 1);
+            scatter(AxesHandle,  indxToPlot(CorrectTrialsIndx), SideList(indxToPlot(CorrectTrialsIndx)),'MarkerFaceColor','g','MarkerEdgeColor', 'g');
+            %Plot Correct, unrewarded
             DidNotChooseTrialsIndx = (OutcomeRecord(indxToPlot) == 2);
+            scatter(AxesHandle,  indxToPlot(DidNotChooseTrialsIndx), SideList(indxToPlot(DidNotChooseTrialsIndx)),'go','MarkerFaceColor',[1 1 1]);
+            %Plot DidNotChoose
+            DidNotChooseTrialsIndx = (OutcomeRecord(indxToPlot) == 3);
             scatter(AxesHandle,  indxToPlot(DidNotChooseTrialsIndx), SideList(indxToPlot(DidNotChooseTrialsIndx)),'bo','MarkerFaceColor',[1 1 1]);
-            
+            xlabel(AxesHandle, 'Trial#', 'FontSize', 18);
             drawnow;
         end
 

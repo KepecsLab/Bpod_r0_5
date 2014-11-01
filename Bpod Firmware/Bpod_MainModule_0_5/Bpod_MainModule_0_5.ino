@@ -148,6 +148,7 @@ void setup()   {
   SetWireOutputLines(0);
   SetBNCOutputLines(0);
   updateStatusLED(0);
+  ValveRegWrite(0);
 }
 
 void loop()                     
@@ -170,7 +171,7 @@ void loop()
       SerialUSB.write(FirmwareBuildVersion);
       ConnectedToClient = 1;
       break;
-    case 'O':  // Override PWM lines
+    case 'O':  // Override hardware state
       manualOverrideOutputs();
       break;
     case 'I': // Read and return digital input line states
@@ -304,7 +305,7 @@ void loop()
           PortInputLineValue[x] = digitalRead(PortDigitalInputLines[x]); // Read each photogate's current state into an array
           if (PortInputLineValue[x] == HIGH) {PortInputLineLastKnownStatus[x] = HIGH;} else {PortInputLineLastKnownStatus[x] = LOW;} // Update last known state of input line
         } else {
-          PortInputLineLastKnownStatus[x] = LOW; PortInputLineValue[x] == LOW;
+          PortInputLineLastKnownStatus[x] = LOW; PortInputLineValue[x] = LOW;
         } 
       }
       for (int x = 0; x < 2; x++) {

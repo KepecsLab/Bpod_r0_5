@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 function Olfactory2AFC
-% This protocol demonstrates control of Matt Rechia's olfactometer by using the hardware serial port to control an Arduino Leonardo Ethernet client. 
+% This protocol demonstrates control of the Island Motion olfactometer by using the hardware serial port to control an Arduino Leonardo Ethernet client. 
 % Written by Josh Sanders, 10/2014.
 %
 % SETUP
 % You will need:
-% - Matt Rechia's olfactometer
+% - An Island Motion olfactometer: http://island-motion.com/5.html
 % - Arduino Leonardo double-stacked with the Arduino Ethernet shield and the Bpod shield
 % - This computer connected to the olfactometer's Ethernet router
 % - The Ethernet shield connected to the same router
@@ -51,8 +51,8 @@ TrialTypes = ceil(rand(1,MaxTrials)*2);
 BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 
 %% Initialize plots
-BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.05 .2 .9 .7]);
+BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
 
 %% Initialize Ethernet client on hardware serial port 1 and connect to olfactometer
@@ -142,7 +142,7 @@ for x = 1:Data.nTrials
     elseif ~isnan(Data.RawEvents.Trial{x}.States.Punish(1))
         Outcomes(x) = 0;
     else
-        Outcomes(x) = 2;
+        Outcomes(x) = 3;
     end
 end
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes)

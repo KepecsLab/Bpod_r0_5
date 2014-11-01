@@ -55,8 +55,8 @@ TrialTypes = ceil(rand(1,MaxTrials)*2);
 BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 
 %% Initialize plots
-BpodSystem.GUIHandles.Figures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Click2AFC Plots','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.05 .2 .9 .7]);
+BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
 
 %% Define stimuli and send to sound server
@@ -146,6 +146,7 @@ for currentTrial = 1:MaxTrials
     if BpodSystem.BeingUsed == 0
         return
     end
+    S.GUI.SinWaveFreqLeft = S.GUI.SinWaveFreqLeft + 200;
 end
 
 function UpdateOutcomePlot(TrialTypes, Data)
@@ -157,7 +158,7 @@ for x = 1:Data.nTrials
     elseif ~isnan(Data.RawEvents.Trial{x}.States.Punish(1))
         Outcomes(x) = 0;
     else
-        Outcomes(x) = 2;
+        Outcomes(x) = 3;
     end
 end
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes)

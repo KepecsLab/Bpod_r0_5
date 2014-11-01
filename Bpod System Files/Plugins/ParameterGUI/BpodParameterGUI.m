@@ -25,6 +25,7 @@ function varargout = BpodParameterGUI(varargin)
 global BpodSystem
 Op = varargin{1};
 Params = varargin{2};
+Op = lower(Op);
 switch Op
     case 'init'
         Params = Params.GUI;
@@ -35,7 +36,7 @@ switch Op
             ParamValues(x) = getfield(Params, ParamNames{x});
         end
         Vsize = 25+(30*nValues);
-        BpodSystem.GUIHandles.Figures.BpodParameterGUI = figure('Position', [100 250 320 Vsize],'name','Live Params','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+        BpodSystem.ProtocolFigures.BpodParameterGUI = figure('Position', [100 250 320 Vsize],'name','Live Params','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
         uicontrol('Style', 'text', 'String', 'Parameter', 'Position', [10 Vsize-20 200 20], 'FontWeight', 'bold', 'FontSize', 14, 'FontName', 'Arial');
         uicontrol('Style', 'text', 'String', 'Value', 'Position', [235 Vsize-20 70 20], 'FontWeight', 'bold', 'FontSize', 14, 'FontName', 'Arial');
         BpodSystem.GUIHandles.ParameterGUI = struct;
