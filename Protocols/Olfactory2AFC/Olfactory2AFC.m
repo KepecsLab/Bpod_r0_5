@@ -54,6 +54,7 @@ BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will b
 BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
 BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
+BpodNotebook('init');
 
 %% Initialize Ethernet client on hardware serial port 1 and connect to olfactometer
 SerialEthernet('Init', 'COM65'); % Set this to the correct COM port for Arduino Leonardo

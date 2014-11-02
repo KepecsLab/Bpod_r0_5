@@ -22,4 +22,5 @@ while Building == 1
         ClickTimes(Pos) = Time;
     end
 end
-ClickTimes = ClickTimes(1:Pos-1)/1000000;
+ClickTimes = ClickTimes(1:Pos-1); % Trim click train preallocation to length
+ClickTimes = round(ClickTimes/100)/10000; % Make clicks multiples of 100us - necessary for pulse time programming

@@ -18,14 +18,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
 function ValveTimes = GetValveTimes(LiquidAmount, TargetValves)
-loadBpodPath
-CalibrationFilePath = fullfile(BpodPath, 'Calibration Files', 'LiquidCalibration.mat');
-load(CalibrationFilePath);
+global BpodSystem
 nValves = length(TargetValves);
 ValveTimes = nan(1,nValves);
 for x = 1:nValves
     ValidTable = 1;
-    CurrentTable = LiquidCal(TargetValves(x)).Table;
+    CurrentTable = BpodSystem.CalibrationTables.LiquidCal(TargetValves(x)).Table;
     if ~isempty(CurrentTable)
         ValveDurations = CurrentTable(:,1)';
         nMeasurements = length(ValveDurations);
@@ -38,7 +36,7 @@ for x = 1:nValves
         error(['Not enough liquid calibration measurements exist for valve ' num2str(TargetValves(x)) '. Bpod needs at least 3 measurements.'])
     end
     if ValidTable == 1
-        ValveTimes(x) = polyval(LiquidCal(TargetValves(x)).TrinomialCoeffs, LiquidAmount);
+        ValveTimes(x) = polyval(BpodSystem.CalibrationTables.LiquidCal(TargetValves(x)).TrinomialCoeffs, LiquidAmount);
         if isnan(ValveTimes(x))
             ValveTimes(x) = 0;
         end

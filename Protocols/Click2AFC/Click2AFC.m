@@ -56,6 +56,7 @@ BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will b
 BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
 BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
+BpodNotebook('init');
 
 %% Main trial loop
 for currentTrial = 1:MaxTrials 

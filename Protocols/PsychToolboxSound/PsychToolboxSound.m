@@ -58,6 +58,7 @@ BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will b
 BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
 BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
 OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
+BpodNotebook('init');
 
 %% Define stimuli and send to sound server
 SF = 192000; % Sound card sampling rate
@@ -93,11 +94,11 @@ for currentTrial = 1:MaxTrials
     switch TrialTypes(currentTrial) % Determine trial-specific state matrix fields
         case 1
             OutputActionArgument = {'SoftCode', 1, 'BNCState', 1}; 
-            LeftActionState = 'Reward'; RightActionState = 'Punish';
+            LeftActionState = 'Reward'; RightActionState = 'Punish'; CorrectWithdrawalEvent = 'Port1Out';
             ValveCode = 1; ValveTime = LeftValveTime;
         case 2
             OutputActionArgument = {'SoftCode', 2, 'BNCState', 1};
-            LeftActionState = 'Punish'; RightActionState = 'Reward';
+            LeftActionState = 'Punish'; RightActionState = 'Reward'; CorrectWithdrawalEvent = 'Port3Out';
             ValveCode = 4; ValveTime = RightValveTime;
     end
     sma = NewStateMatrix(); % Assemble state matrix
@@ -123,8 +124,12 @@ for currentTrial = 1:MaxTrials
         'OutputActions', {'PWM1', 255, 'PWM3', 255});
     sma = AddState(sma, 'Name', 'Reward', ...
         'Timer', ValveTime,...
-        'StateChangeConditions', {'Tup', 'exit'},...
+        'StateChangeConditions', {'Tup', 'Drinking'},...
         'OutputActions', {'ValveState', ValveCode});
+    sma = AddState(sma, 'Name', 'Drinking', ...
+        'Timer', 10,...
+        'StateChangeConditions', {'Tup', 'exit', CorrectWithdrawalEvent, 'exit'},...
+        'OutputActions', {});
     sma = AddState(sma, 'Name', 'Punish', ...
         'Timer', S.GUI.TimeoutDuration,...
         'StateChangeConditions', {'Tup', 'exit'},...
@@ -137,7 +142,7 @@ for currentTrial = 1:MaxTrials
     RawEvents = RunStateMatrix;
     if ~isempty(fieldnames(RawEvents)) % If trial data was returned
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents); % Computes trial events from raw data
-        BpodSystem.Data = BpodNotebook(BpodSystem.Data); % Sync with Bpod notebook plugin
+        BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin
         BpodSystem.Data.TrialSettings(currentTrial) = S; % Adds the settings used for the current trial to the Data struct (to be saved after the trial ends)
         BpodSystem.Data.TrialTypes(currentTrial) = TrialTypes(currentTrial); % Adds the trial type of the current trial to data
         UpdateOutcomePlot(TrialTypes, BpodSystem.Data);
@@ -146,7 +151,6 @@ for currentTrial = 1:MaxTrials
     if BpodSystem.BeingUsed == 0
         return
     end
-    S.GUI.SinWaveFreqLeft = S.GUI.SinWaveFreqLeft + 200;
 end
 
 function UpdateOutcomePlot(TrialTypes, Data)
@@ -161,4 +165,4 @@ for x = 1:Data.nTrials
         Outcomes(x) = 3;
     end
 end
-OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes)
+OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes);

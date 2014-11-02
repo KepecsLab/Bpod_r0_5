@@ -1,5 +1,5 @@
 function EnterCalMeasurements
-
+global BpodSystem
 handles=guidata(LiquidCalibrationManager);
 figure(handles.RunMeasurementsFig);
 
@@ -90,6 +90,7 @@ if AllValid == 1
     LiquidCal = handles.LiquidCal;
     LiquidCal(1).LastDateModified = now;
     save(SavePath, 'LiquidCal');
+    BpodSystem.CalibrationTables.LiquidCal = LiquidCal;
     msgbox('Calibration files updated.', 'modal')
     close(handles.RunMeasurementsFig);
 end

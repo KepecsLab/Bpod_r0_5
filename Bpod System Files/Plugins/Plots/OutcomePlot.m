@@ -49,7 +49,7 @@ function OutcomePlot(AxesHandle, Action, varargin)
 
 %% Code Starts Here
 global nTrialsToShow %this is for convenience
-% global BpodSystem
+global BpodSystem
 
 switch Action
     case 'init'
@@ -61,10 +61,18 @@ switch Action
         if nargin > 3 %custom number of trials
             nTrialsToShow =varargin{3};
         end
-        
+        axes(AxesHandle);
         %plot in specified axes
-        scatter(AxesHandle,  1:nTrialsToShow, SideList(1:nTrialsToShow),'MarkerFaceColor','b','MarkerEdgeColor', 'b');
-        set(AxesHandle,'TickDir', 'out','YLim', [-1, 2], 'YTick', [0 1],'YTickLabel', { 'Right','Left'}, 'FontSize', 16);
+        Xdata = 1:nTrialsToShow; Ydata = SideList(Xdata);
+        BpodSystem.GUIHandles.FutureTrialLine = line([Xdata,Xdata],[Ydata,Ydata],'LineStyle','none','Marker','o','MarkerEdge','b','MarkerFace','b', 'MarkerSize',6);
+        BpodSystem.GUIHandles.CurrentTrialCircle = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','k','MarkerFace',[1 1 1], 'MarkerSize',6);
+        BpodSystem.GUIHandles.CurrentTrialCross = line([0,0],[0,0], 'LineStyle','none','Marker','+','MarkerEdge','k','MarkerFace',[1 1 1], 'MarkerSize',6);
+        BpodSystem.GUIHandles.UnpunishedErrorLine = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','r','MarkerFace',[1 1 1], 'MarkerSize',6);
+        BpodSystem.GUIHandles.PunishedErrorLine = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','r','MarkerFace','r', 'MarkerSize',6);
+        BpodSystem.GUIHandles.RewardedCorrectLine = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','g','MarkerFace','g', 'MarkerSize',6);
+        BpodSystem.GUIHandles.UnrewardedCorrectLine = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','g','MarkerFace',[1 1 1], 'MarkerSize',6);
+        BpodSystem.GUIHandles.NoResponseLine = line([0,0],[0,0], 'LineStyle','none','Marker','o','MarkerEdge','b','MarkerFace',[1 1 1], 'MarkerSize',6);
+        set(AxesHandle,'TickDir', 'out','YLim', [-1, 2], 'YTick', [0 1],'YTickLabel', {'Right','Left'}, 'FontSize', 16);
         xlabel(AxesHandle, 'Trial#', 'FontSize', 18);
         hold(AxesHandle, 'on');
         
@@ -80,36 +88,39 @@ switch Action
         % recompute xlim
         [mn, mx] = rescaleX(AxesHandle,CurrentTrial,nTrialsToShow);
         
+        %axes(AxesHandle); %cla;
         %plot future trials
         FutureTrialsIndx = CurrentTrial:mx;
-        scatter(AxesHandle,  FutureTrialsIndx, SideList(FutureTrialsIndx),'MarkerFaceColor','b','MarkerEdgeColor', 'b');
-        
+        Xdata = FutureTrialsIndx; Ydata = SideList(Xdata);
+        set(BpodSystem.GUIHandles.FutureTrialLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
         %Plot current trial
-        scatter(AxesHandle,CurrentTrial,SideList(CurrentTrial), 'o', 'MarkerFaceColor',[1 1 1],'MarkerEdgeColor', 'k')
-        scatter(AxesHandle,CurrentTrial,SideList(CurrentTrial), '+', 'MarkerFaceColor',[1 1 1],'MarkerEdgeColor', 'k')
+        set(BpodSystem.GUIHandles.CurrentTrialCircle, 'xdata', [CurrentTrial,CurrentTrial], 'ydata', [SideList(CurrentTrial),SideList(CurrentTrial)]);
+        set(BpodSystem.GUIHandles.CurrentTrialCross, 'xdata', [CurrentTrial,CurrentTrial], 'ydata', [SideList(CurrentTrial),SideList(CurrentTrial)]);
         
         %Plot past trials
         if ~isempty(OutcomeRecord)
             indxToPlot = mn:CurrentTrial-1;
             %Plot Error, unpunished
             EarlyWithdrawalTrialsIndx =(OutcomeRecord(indxToPlot) == -1);
-            scatter(AxesHandle,  indxToPlot(EarlyWithdrawalTrialsIndx), SideList(indxToPlot(EarlyWithdrawalTrialsIndx)),'ro','MarkerFaceColor',[1 1 1]);
+            Xdata = indxToPlot(EarlyWithdrawalTrialsIndx); Ydata = SideList(Xdata);
+            set(BpodSystem.GUIHandles.UnpunishedErrorLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
             %Plot Error, punished
             InCorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 0);
-            scatter(AxesHandle,  indxToPlot(InCorrectTrialsIndx), SideList(indxToPlot(InCorrectTrialsIndx)),'MarkerFaceColor','r','MarkerEdgeColor', 'r');
+            Xdata = indxToPlot(InCorrectTrialsIndx); Ydata = SideList(Xdata);
+            set(BpodSystem.GUIHandles.PunishedErrorLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
             %Plot Correct, rewarded
             CorrectTrialsIndx = (OutcomeRecord(indxToPlot) == 1);
-            scatter(AxesHandle,  indxToPlot(CorrectTrialsIndx), SideList(indxToPlot(CorrectTrialsIndx)),'MarkerFaceColor','g','MarkerEdgeColor', 'g');
+            Xdata = indxToPlot(CorrectTrialsIndx); Ydata = SideList(Xdata);
+            set(BpodSystem.GUIHandles.RewardedCorrectLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
             %Plot Correct, unrewarded
-            DidNotChooseTrialsIndx = (OutcomeRecord(indxToPlot) == 2);
-            scatter(AxesHandle,  indxToPlot(DidNotChooseTrialsIndx), SideList(indxToPlot(DidNotChooseTrialsIndx)),'go','MarkerFaceColor',[1 1 1]);
+            UnrewardedTrialsIndx = (OutcomeRecord(indxToPlot) == 2);
+            Xdata = indxToPlot(UnrewardedTrialsIndx); Ydata = SideList(Xdata);
+            set(BpodSystem.GUIHandles.UnrewardedCorrectLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
             %Plot DidNotChoose
             DidNotChooseTrialsIndx = (OutcomeRecord(indxToPlot) == 3);
-            scatter(AxesHandle,  indxToPlot(DidNotChooseTrialsIndx), SideList(indxToPlot(DidNotChooseTrialsIndx)),'bo','MarkerFaceColor',[1 1 1]);
-            xlabel(AxesHandle, 'Trial#', 'FontSize', 18);
-            drawnow;
+            Xdata = indxToPlot(DidNotChooseTrialsIndx); Ydata = SideList(Xdata);
+            set(BpodSystem.GUIHandles.NoResponseLine, 'xdata', [Xdata,Xdata], 'ydata', [Ydata,Ydata]);
         end
-
 end
 
 end

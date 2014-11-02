@@ -41,7 +41,7 @@ function varargout = LiquidCalibrationManager(varargin)
 
 % Edit the above text to modify the response to help LiquidCalibrationManager
 
-% Last Modified by GUIDE v2.5 23-Oct-2012 18:25:17
+% Last Modified by GUIDE v2.5 02-Nov-2014 16:26:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -628,5 +628,3 @@ end
 set(handles.listbox2,'String',ThisValveCalEntries);
 
 guidata(hObject, handles);
-
-

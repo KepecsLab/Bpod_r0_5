@@ -62,6 +62,15 @@ catch
     dir_calfiles = dir( fullfile(BpodSystem.BpodPath,'Calibration Files') );
     if length(dir_calfiles) == 0, %then Data didn't exist.
         mkdir([BpodSystem.BpodPath,'/' 'Calibration Files']);
+        BpodSystem.CalibrationTables.LiquidCal = [];
+    else
+        try
+        LiquidCalibrationFilePath = fullfile(BpodSystem.BpodPath, 'Calibration Files', 'LiquidCalibration.mat');
+        load(LiquidCalibrationFilePath);
+        BpodSystem.CalibrationTables.LiquidCal = LiquidCal;
+        catch
+          BpodSystem.CalibrationTables.LiquidCal = [];  
+        end
     end
     
     % Load input channel settings

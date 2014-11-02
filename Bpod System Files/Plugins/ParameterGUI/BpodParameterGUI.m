@@ -61,7 +61,7 @@ switch Op
                 set(BpodSystem.GUIHandles.ParameterGUI.ParamValues(x), 'String', num2str(thisParamInputValue));
                 thisParamGUIValue = thisParamInputValue;
             end
-            eval(['Params.GUI.' BpodSystem.GUIHandles.ParameterGUI.ParamNames{x} ' = ' num2str(thisParamGUIValue) ';'])
+            Params.GUI.(BpodSystem.GUIHandles.ParameterGUI.ParamNames{x}) = thisParamGUIValue;
             BpodSystem.GUIHandles.ParameterGUI.LastParamValues(x) = thisParamGUIValue;
         end
     varargout{1} = Params;

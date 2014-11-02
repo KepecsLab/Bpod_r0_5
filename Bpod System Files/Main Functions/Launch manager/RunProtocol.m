@@ -46,11 +46,15 @@ else
         if BpodSerialBytesAvailable > 0
             BpodSerialRead(BpodSerialBytesAvailable, 'uint8');
         end
-        % Shut down protocol and plugin figures (should be made more general)
+
         if isfield(BpodSystem.PluginSerialPorts, 'TeensySoundServer')
             TeensySoundServer('end');
         end
+    else
+        BpodSystem.ManualOverrideFlag = 1;
+        BpodSystem.VirtualManualOverrideBytes = 'VXX';
     end
+    % Shut down protocol and plugin figures (should be made more general)
     try
         Figs = fields(BpodSystem.ProtocolFigures);
         nFigs = length(Figs);
