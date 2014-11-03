@@ -51,8 +51,8 @@ if BpodSystem.EmulatorMode == 1
 end
 SetBpodHardwareMirror2CurrentState(1);
 UpdateBpodCommanderGUI;
-RunningMatrix = 1;
-while RunningMatrix
+BpodSystem.InStateMatrix = 1;
+while BpodSystem.InStateMatrix
     if BpodSystem.EmulatorMode == 0
         if BpodSerialBytesAvailable > 0
             NewMessage = 1;
@@ -84,8 +84,7 @@ while RunningMatrix
                 CurrentEvent(1:nCurrentEvents) = TempCurrentEvents(1:nCurrentEvents) + 1; % Read and convert from c++ index at 0 to MATLAB index at 1
                 DominantEvent = CurrentEvent(1); % Of all events captured in a cycle, only the first event may trigger a state transition.
                 if DominantEvent == 256
-                    %BpodSystem.BeingUsed = 0;
-                    RunningMatrix = 0;
+                    BpodSystem.InStateMatrix = 0;
                     break
                 elseif DominantEvent < 41
                     NewState = InputMatrix(BpodSystem.CurrentStateCode, DominantEvent);
@@ -134,7 +133,7 @@ while RunningMatrix
                         end
                     end
                 end
-                if RunningMatrix
+                if BpodSystem.InStateMatrix == 1
                     UpdateBpodCommanderGUI;
                     BpodSystem.LastEvent = EventNames{DominantEvent};
                     Events(nEvents+1:(nEvents+nCurrentEvents)) = CurrentEvent(1:nCurrentEvents);

@@ -46,7 +46,7 @@ else
         if BpodSerialBytesAvailable > 0
             BpodSerialRead(BpodSerialBytesAvailable, 'uint8');
         end
-
+        BpodSystem.InStateMatrix = 0;
         if isfield(BpodSystem.PluginSerialPorts, 'TeensySoundServer')
             TeensySoundServer('end');
         end
