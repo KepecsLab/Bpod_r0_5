@@ -29,7 +29,6 @@ if BpodSystem.EmulatorMode == 0
     end
     BpodSerialWrite('R', 'uint8'); % Send the code to run the loaded matrix (character "R" for Run)
 end
-BpodSystem.CurrentStateCode = 2;
 EventNames = BpodSystem.EventNames;
 MaxEvents = 1000;
 nEvents = 0; nStates = 1;
@@ -37,14 +36,22 @@ Events = zeros(1,MaxEvents); States = zeros(1,MaxEvents);
 CurrentEvent = zeros(1,10);
 StateChangeIndexes = zeros(1,MaxEvents);
 States(nStates) = 1;
+StateNames = BpodSystem.StateMatrix.StateNames;
+BpodSystem.LastStateCode = 0;
 BpodSystem.CurrentStateCode = 1;
+BpodSystem.LastStateName = 'None';
+BpodSystem.CurrentStateName = StateNames{1};
 InputMatrix = BpodSystem.StateMatrix.InputMatrix;
 GlobalTimerMatrix = BpodSystem.StateMatrix.GlobalTimerMatrix;
 GlobalCounterMatrix = BpodSystem.StateMatrix.GlobalCounterMatrix;
-StateNames = BpodSystem.StateMatrix.StateNames;
 nTotalStates = length(StateNames);
 UpdateBpodCommanderGUI; % Reads BpodSystem.HardwareState and BpodSystem.LastEvent to commander GUI.
+
+% Update time display
+TimeElapsed = ceil((now - BpodSystem.Birthdate)*100000);
+set(BpodSystem.GUIHandles.TimeDisplay, 'String', Secs2HMS(TimeElapsed));
 set(BpodSystem.GUIHandles.RunButton, 'CData', BpodSystem.Graphics.PauseButton);
+
 BpodSystem.BeingUsed = 1; BpodSystem.InStateMatrix = 1;
 if BpodSystem.EmulatorMode == 1
     RunBpodEmulator('init', []);
@@ -62,8 +69,6 @@ while BpodSystem.InStateMatrix
         end
     else
         if BpodSystem.ManualOverrideFlag == 1;
-            NewMessage = 1;
-            opCodeBytes = [1 1];
             ManualOverrideEvent = VirtualManualOverride(BpodSystem.VirtualManualOverrideBytes);
             BpodSystem.ManualOverrideFlag = 0;
         else
@@ -99,8 +104,10 @@ while BpodSystem.InStateMatrix
                         StateChangeIndexes(nStates) = nEvents+1;
                         nStates = nStates + 1;
                         States(nStates) = NewState;
+                        BpodSystem.LastStateCode = BpodSystem.CurrentStateCode;
                         BpodSystem.CurrentStateCode = NewState;
                         BpodSystem.CurrentStateName = StateNames{NewState};
+                        BpodSystem.LastStateName = StateNames{BpodSystem.LastStateCode};
                         SetBpodHardwareMirror2CurrentState(NewState);
                         if BpodSystem.EmulatorMode == 1
                             BpodSystem.Emulator.CurrentState = NewState;
@@ -283,3 +290,19 @@ for x = 1:nEvents
             BpodSystem.HardwareState.WireInputs(4) = 0;
     end
 end
+function TimeString = Secs2HMS(Seconds)
+H = floor(Seconds/3600); 
+Seconds = Seconds-(H*3600);
+M = floor(Seconds/60); 
+S = Seconds - (M*60);
+if M < 10
+    MPad = '0';
+else 
+    MPad = '';
+end
+if S < 10
+    SPad = '0';
+else 
+    SPad = '';
+end
+TimeString = [num2str(H) ':' MPad num2str(M) ':' SPad num2str(S)];

@@ -7,7 +7,9 @@ classdef BpodObject < handle
         Birthdate
         LastTimestamp
         CurrentStateCode
+        LastStateCode
         CurrentStateName
+        LastStateName
         LastEvent
         LastTrialData
         SessionData

@@ -17,7 +17,7 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 %}
-function sma_out = AddState(sma, varargin)
+function sma_out = AddState(sma, namestr, StateName, timerstr, StateTimer, conditionstr, StateChangeConditions, outputstr, OutputActions)
 % Adds a state to an existing state matrix.
 %
 % Example:
@@ -29,24 +29,9 @@ function sma_out = AddState(sma, varargin)
 %  'OutputActions', {'LEDState', 1, 'WireState', 3, 'SerialCode', 3});
 
 global BpodSystem
-%% First, parse & assign the arguments from varargin to local variables
-
-% Parse state timer
-
-for x = 1:2:nargin-1
-    switch lower(varargin{x})
-        case 'name'
-            StateName = varargin{x+1};
-            if strcmpi(StateName, 'exit')
-                error('Error: The exit state is added automatically when sending a matrix. Do not add it explicitly.')
-            end
-        case 'timer'
-            StateTimer = varargin{x+1};
-        case 'statechangeconditions'
-            StateChangeConditions = varargin{x+1};
-        case 'outputactions'
-            OutputActions = varargin{x+1};
-    end
+% Sanity check state name
+if strcmpi(StateName, 'exit')
+    error('Error: The exit state is added automatically when sending a matrix. Do not add it explicitly.')
 end
 
 %% Check whether the new state has already been referenced. Add new blank state to matrix
@@ -83,7 +68,7 @@ for x = 2:2:length(StateChangeConditions)
         isThere = sum(strcmp(ThisStateName, sma.StateNames)) > 0;
         if isThere == 0
             NewStateNumber = length(sma.StateNames)+1;
-            sma.StateNames{NewStateNumber} = ThisStateName;
+            sma.StateNames(NewStateNumber) = StateChangeConditions(x);
             sma.StatesDefined(NewStateNumber) = 0;
         end
     end
@@ -101,7 +86,7 @@ for x = 1:2:length(StateChangeConditions)
     if ~isempty(CandidateEventCode)
     if CandidateEventCode > 40
         CandidateEventName = StateChangeConditions{x};
-        if length(CandidateEventName > 4)
+        if length(CandidateEventName) > 4
             if sum(lower(CandidateEventName(length(CandidateEventName)-3:length(CandidateEventName))) == '_end') == 4
                 if CandidateEventCode < 46
                     % This is a transition for a global timer. Add to global timer matrix.

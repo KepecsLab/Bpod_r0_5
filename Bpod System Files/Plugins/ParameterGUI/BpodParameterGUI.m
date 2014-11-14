@@ -56,9 +56,9 @@ switch Op
         for x = 1:nValues
             thisParamGUIValue = str2double(get(BpodSystem.GUIHandles.ParameterGUI.ParamValues(x), 'String'));
             thisParamLastValue = BpodSystem.GUIHandles.ParameterGUI.LastParamValues(x);
-            thisParamInputValue = eval(['Params.GUI.' ParamNames{x}]);
+            thisParamInputValue = Params.GUI.(ParamNames{x});
             if thisParamGUIValue == thisParamLastValue % If the user didn't change the GUI, the GUI can be changed from the input.
-                set(BpodSystem.GUIHandles.ParameterGUI.ParamValues(x), 'String', num2str(thisParamInputValue));
+                set(BpodSystem.GUIHandles.ParameterGUI.ParamValues(x), 'String', sprintf('%g',thisParamInputValue));
                 thisParamGUIValue = thisParamInputValue;
             end
             Params.GUI.(BpodSystem.GUIHandles.ParameterGUI.ParamNames{x}) = thisParamGUIValue;
