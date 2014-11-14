@@ -199,18 +199,12 @@ function SetBpodHardwareMirror2CurrentState(CurrentState)
 global BpodSystem
 if CurrentState > 0
     ValveState = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 1);
-    for x = 1:8
-        ThisValveState = bitget(ValveState,x);
-        BpodSystem.HardwareState.Valves(x) = ThisValveState;
-    end
+    BpodSystem.HardwareState.Valves = bitget(ValveState,1:8);
     BNCState = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 2);
-    for x = 1:2
-        BpodSystem.HardwareState.BNCOutputs(x) = bitget(BNCState,x);
-    end
+    BpodSystem.HardwareState.BNCOutputs = bitget(BNCState,1:2);
     WireState = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 3);
-    for x = 1:4
-        BpodSystem.HardwareState.WireOutputs(x) = bitget(WireState,x);
-    end
+    BpodSystem.HardwareState.WireOutputs = bitget(WireState,1:4);
+    
     BpodSystem.HardwareState.PWMLines(1:8) = BpodSystem.StateMatrix.OutputMatrix(CurrentState, 10:17);
     BpodSystem.HardwareState.Serial1Code = BpodSystem.StateMatrix.OutputMatrix(CurrentState,4);
     BpodSystem.HardwareState.Serial2Code = BpodSystem.StateMatrix.OutputMatrix(CurrentState,5);

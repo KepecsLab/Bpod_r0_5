@@ -31,36 +31,21 @@ function sma_out = AddState(sma, varargin)
 global BpodSystem
 %% First, parse & assign the arguments from varargin to local variables
 
-% Parse state name
-for x = 1:2:nargin-1
-    if sum(strcmp('Name', varargin(x))) > 0 
-        StateName = varargin{x+1};
-        if strcmpi(StateName, 'exit')
-            error('Error: The exit state is added automatically when sending a matrix. Do not add it explicitly.')
-        end
-        break
-    end
-end
-
 % Parse state timer
-for x = 1:2:nargin-1
-    if sum(strcmp('Timer', varargin(x))) > 0 
-        StateTimer = varargin{x+1};
-        break
-    end
-end
 
-% Parse state change conditions
 for x = 1:2:nargin-1
-    if sum(strcmp('StateChangeConditions', varargin(x))) > 0 
-        StateChangeConditions = varargin{x+1};
-    end
-end
-
-% Parse output actions
-for x = 1:2:nargin-1
-    if sum(strcmp('OutputActions', varargin(x))) > 0        
-        OutputActions = varargin{x+1};
+    switch lower(varargin{x})
+        case 'name'
+            StateName = varargin{x+1};
+            if strcmpi(StateName, 'exit')
+                error('Error: The exit state is added automatically when sending a matrix. Do not add it explicitly.')
+            end
+        case 'timer'
+            StateTimer = varargin{x+1};
+        case 'statechangeconditions'
+            StateChangeConditions = varargin{x+1};
+        case 'outputactions'
+            OutputActions = varargin{x+1};
     end
 end
 
@@ -117,7 +102,7 @@ for x = 1:2:length(StateChangeConditions)
     if CandidateEventCode > 40
         CandidateEventName = StateChangeConditions{x};
         if length(CandidateEventName > 4)
-            if sum(CandidateEventName(length(CandidateEventName)-3:length(CandidateEventName)) == '_End') == 4
+            if sum(lower(CandidateEventName(length(CandidateEventName)-3:length(CandidateEventName))) == '_end') == 4
                 if CandidateEventCode < 46
                     % This is a transition for a global timer. Add to global timer matrix.
                     GlobalTimerNumber = str2double(CandidateEventName(length(CandidateEventName) - 4));

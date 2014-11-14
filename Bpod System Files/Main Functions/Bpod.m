@@ -45,6 +45,7 @@ catch
     else
         BpodSystem.SystemSettings = struct;
     end
+    BpodSystem.BlankStateMatrix = GenerateBlankStateMatrix;
     
     BpodSplashScreen(1);
     
