@@ -50,7 +50,7 @@ UpdateBpodCommanderGUI; % Reads BpodSystem.HardwareState and BpodSystem.LastEven
 % Update time display
 TimeElapsed = ceil((now - BpodSystem.Birthdate)*100000);
 set(BpodSystem.GUIHandles.TimeDisplay, 'String', Secs2HMS(TimeElapsed));
-set(BpodSystem.GUIHandles.RunButton, 'CData', BpodSystem.Graphics.PauseButton);
+set(BpodSystem.GUIHandles.RunButton, 'cdata', BpodSystem.Graphics.PauseButton);
 
 BpodSystem.BeingUsed = 1; BpodSystem.InStateMatrix = 1;
 if BpodSystem.EmulatorMode == 1
@@ -74,7 +74,7 @@ while BpodSystem.InStateMatrix
         else
             ManualOverrideEvent = [];
         end
-        [NewMessage opCodeBytes VirtualCurrentEvents] = RunBpodEmulator('loop', ManualOverrideEvent);
+        [NewMessage, opCodeBytes, VirtualCurrentEvents] = RunBpodEmulator('loop', ManualOverrideEvent);
     end
     if NewMessage
         opCode = opCodeBytes(1);

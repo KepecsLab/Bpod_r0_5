@@ -119,6 +119,7 @@ for currentTrial = 1:MaxTrials
         UpdateOutcomePlot(TrialTypes, BpodSystem.Data);
         SaveBpodSessionData; % Saves the field BpodSystem.Data to the current data file
     end
+    HandlePauseCondition;
     if BpodSystem.BeingUsed == 0
         return
     end

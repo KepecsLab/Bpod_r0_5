@@ -21,19 +21,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 global BpodSystem
 BpodSystem.GUIHandles.MainFig = figure('Position',[80 100 800 400],'name','B-Pod v0.5 beta','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off', 'CloseRequestFcn', 'EndBpod');
 %BpodSystem.GUIHandles.MainFig = figure('Position',[100 200 800 400],'name','B-Pod v0.5 beta','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-BpodSystem.Graphics.GoButton = imread('GoButton.bmp');
-BpodSystem.GUIHandles.RunButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [705 45 85 85], 'Callback', 'RunProtocol', 'CData', BpodSystem.Graphics.GoButton, 'TooltipString', 'Run selected protocol');
+BpodSystem.Graphics.GoButton = imread('PlayButton.bmp');
+BpodSystem.Graphics.PauseButton = imread('PauseButton.bmp');
+BpodSystem.Graphics.PauseRequestedButton = imread('PauseRequestedButton.bmp');
+BpodSystem.Graphics.StopButton = imread('StopButton.bmp');
+BpodSystem.GUIHandles.RunButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [718 130 60 60], 'Callback', 'RunProtocol(''StartPause'')', 'CData', BpodSystem.Graphics.GoButton, 'TooltipString', 'Run selected protocol');
+BpodSystem.GUIHandles.EndButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [718 50 60 60], 'Callback', 'RunProtocol(''Stop'')', 'CData', BpodSystem.Graphics.StopButton, 'TooltipString', 'End session');
+
+
 BpodSystem.Graphics.OffButton = imread('ButtonOff.bmp');
 BpodSystem.Graphics.OffButtonDark = imread('ButtonOff_dark.bmp');
 BpodSystem.Graphics.OnButton = imread('ButtonOn.bmp');
-BpodSystem.Graphics.PauseButton = imread('PauseButton.bmp');
 BpodSystem.Graphics.SoftTriggerButton = imread('BpodSoftTrigger.bmp');
 BpodSystem.Graphics.SoftTriggerActiveButton = imread('BpodSoftTrigger_active.bmp');
 BpodSystem.Graphics.SettingsButton = imread('SettingsButton.bmp');
 BpodSystem.Graphics.DocButton = imread('DocButton.bmp');
 BpodSystem.Graphics.AddProtocolButton = imread('AddProtocolIcon.bmp');
-BpodSystem.GUIHandles.SettingsButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [717 272 29 29], 'Callback', 'SettingsMenu', 'CData', BpodSystem.Graphics.SettingsButton, 'TooltipString', 'Settings and calibration');
-BpodSystem.GUIHandles.DocButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [717 180 29 29], 'Callback', 'BpodDocViewer', 'CData', BpodSystem.Graphics.DocButton, 'TooltipString', 'Help and documentation');
+BpodSystem.GUIHandles.SettingsButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [742 285 29 29], 'Callback', 'BpodSettingsMenu', 'CData', BpodSystem.Graphics.SettingsButton, 'TooltipString', 'Settings and calibration');
+BpodSystem.GUIHandles.DocButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [695 285 29 29], 'Callback', 'BpodWiki', 'CData', BpodSystem.Graphics.DocButton, 'TooltipString', 'Documentation wiki');
 
 BpodSystem.GUIHandles.PortValveButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [188 260 30 30], 'Callback', 'ManualOverride(1,1);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle port 1 valve');
 BpodSystem.GUIHandles.PortValveButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [231 260 30 30], 'Callback', 'ManualOverride(1,2);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle port 2 valve');
@@ -62,11 +67,11 @@ BpodSystem.GUIHandles.PortvPokeButton(6) = uicontrol('Style', 'pushbutton', 'Str
 BpodSystem.GUIHandles.PortvPokeButton(7) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [436 180 30 30], 'Callback', 'ManualOverride(3,7);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Port 7 virtual photogate');
 BpodSystem.GUIHandles.PortvPokeButton(8) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [477 180 30 30], 'Callback', 'ManualOverride(3,8);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Port 8 virtual photogate');
 
-BpodSystem.GUIHandles.BNCInputButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [547 260 30 30], 'Callback', 'ManualOverride(4,1);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Spoof BNC Input 1');
-BpodSystem.GUIHandles.BNCInputButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [602 260 30 30], 'Callback', 'ManualOverride(4,2);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Spoof BNC Input 2');
+BpodSystem.GUIHandles.BNCInputButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [525 243 30 30], 'Callback', 'ManualOverride(4,1);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Spoof BNC Input 1');
+BpodSystem.GUIHandles.BNCInputButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [565 243 30 30], 'Callback', 'ManualOverride(4,2);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Spoof BNC Input 2');
 
-BpodSystem.GUIHandles.BNCOutputButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [547 180 30 30], 'Callback', 'ManualOverride(5,1);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle TTL: BNC Output 1');
-BpodSystem.GUIHandles.BNCOutputButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [602 180 30 30], 'Callback', 'ManualOverride(5,2);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle TTL:BNC Output 2');
+BpodSystem.GUIHandles.BNCOutputButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [605 243 30 30], 'Callback', 'ManualOverride(5,1);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle TTL: BNC Output 1');
+BpodSystem.GUIHandles.BNCOutputButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [645 243 30 30], 'Callback', 'ManualOverride(5,2);', 'CData', BpodSystem.Graphics.OffButton, 'TooltipString', 'Toggle TTL:BNC Output 2');
 
 BpodSystem.GUIHandles.InputWireButton(1) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [188 77 30 30], 'Callback', 'ManualOverride(6,1);', 'CData', BpodSystem.Graphics.OffButtonDark, 'TooltipString', 'Spoof input wire 1');
 BpodSystem.GUIHandles.InputWireButton(2) = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [231 77 30 30], 'Callback', 'ManualOverride(6,2);', 'CData', BpodSystem.Graphics.OffButtonDark, 'TooltipString', 'Spoof input wire 1');
@@ -89,10 +94,23 @@ BpodSystem.GUIHandles.PreviousStateDisplay = uicontrol('Style', 'text', 'String'
 BpodSystem.GUIHandles.LastEventDisplay = uicontrol('Style', 'text', 'String', 'None', 'Position', [12 169 115 20], 'FontWeight', 'bold', 'FontSize', 9);
 BpodSystem.GUIHandles.TimeDisplay = uicontrol('Style', 'text', 'String', '0', 'Position', [12 117 115 20], 'FontWeight', 'bold', 'FontSize', 9);
 BpodSystem.GUIHandles.CxnDisplay = uicontrol('Style', 'text', 'String', 'Idle', 'Position', [12 62 115 20], 'FontWeight', 'bold', 'FontSize', 9);
-BpodSystem.GUIHandles.ProtocolSelector = uicontrol('Style', 'listbox', 'String', 'None Loaded', 'Position', [520 45 175 85], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8]);
+BpodSystem.GUIHandles.ProtocolSelector = uicontrol('Style', 'listbox', 'String', 'None Loaded', 'Position', [520 45 185 150], 'FontWeight', 'bold', 'FontSize', 11, 'BackgroundColor', [.8 .8 .8]);
 BpodSystem.GUIHandles.SoftCodeSelector = uicontrol('Style', 'edit', 'String', '0', 'Position', [363 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
 BpodSystem.GUIHandles.HWSerialCodeSelector1 = uicontrol('Style', 'edit', 'String', '0', 'Position', [414 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
 BpodSystem.GUIHandles.HWSerialCodeSelector2 = uicontrol('Style', 'edit', 'String', '0', 'Position', [465 80 40 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.8 .8 .8], 'TooltipString', 'Enter byte code here (0-255; 0=no op)');
+
+% Remove all the nasty borders around pushbuttons on platforms besides win7
+if isempty(strfind(BpodSystem.HostOS, 'Windows 7'))
+    handles = findjobj('class', 'pushbutton');
+    set(handles, 'border', []);
+end
+
+try
+    jScrollPane = findjobj(BpodSystem.GUIHandles.ProtocolSelector); % get the scroll-pane object
+    jListbox = jScrollPane.getViewport.getComponent(0);
+    set(jListbox, 'SelectionBackground',java.awt.Color.red); % option #1
+catch
+end
 
 ha = axes('units','normalized', 'position',[0 0 1 1]);
 uistack(ha,'bottom');
@@ -102,6 +120,8 @@ else
     BG = imread('ConsoleBG_EMU.bmp');
 end
 image(BG); axis off;
+set(ha,'handlevisibility','off','visible','off');
+set(BpodSystem.GUIHandles.MainFig,'handlevisibility','off');
 clear ha BG k PB
 
 % Load protocols into selector

@@ -167,8 +167,12 @@ switch Function
             error(['The psychtoolbox sound server currently supports only ' num2str(nSlaves) ' sounds.'])
         end
     case 'stop'
-        SlaveID = varargin{1};
-        PsychPortAudio('Stop', BpodSystem.PluginObjects.SoundServer.SlaveOutput(SlaveID));
+        if BpodSystem.EmulatorMode == 0
+            SlaveID = varargin{1};
+            PsychPortAudio('Stop', BpodSystem.PluginObjects.SoundServer.SlaveOutput(SlaveID));
+        else
+            clear playsnd
+        end
     case 'stopall'
         for x = 1:nSlaves
             if BpodSystem.EmulatorMode == 0

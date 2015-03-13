@@ -294,6 +294,8 @@ if ~isempty(NameList)
         BpodSystem.ProtocolSettings = eval(['SettingStruct.' FieldName]);
         BpodSystem.Data = struct;
         addpath(ProtocolPath);
+        set(BpodSystem.GUIHandles.RunButton, 'cdata', BpodSystem.Graphics.PauseButton, 'TooltipString', 'Press to pause session');
+        BpodSystem.BeingUsed = 1;
         run(ProtocolPath);
     else
         BpodErrorSound;

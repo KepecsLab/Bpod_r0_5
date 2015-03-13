@@ -487,9 +487,9 @@ handles.nPulsesDropmenu = uicontrol('Style', 'popupmenu', 'String', {'100' '150'
 handles.ToleranceDropmenu = uicontrol('Style', 'popupmenu', 'String', {'5' '10'}, 'Position', [289 416 50 25], 'FontWeight', 'bold', 'FontSize', 12, 'BackgroundColor', [.9 .9 .9], 'TooltipString', 'Percent of intended amount by which measured amount can differ');
 handles.ResultsListbox = uicontrol('Style', 'listbox', 'String', {''}, 'Position', [25 28 355 130], 'FontWeight', 'bold', 'FontSize', 10, 'BackgroundColor', [.85 .85 .85], 'SelectionHighlight', 'off');
 
-jScrollPane = findjobj(handles.ResultsListbox); % get the scroll-pane object
-jListbox = jScrollPane.getViewport.getComponent(0);
-set(jListbox, 'SelectionBackground',[.85 .85 .85]);
+% jScrollPane = findjobj(handles.ResultsListbox); % get the scroll-pane object
+% jListbox = jScrollPane.getViewport.getComponent(0);
+% set(jListbox, 'SelectionBackground',[.85 .85 .85]);
 
 DeliverButtonGFX = imread('TestDeliverButton.bmp');
 handles.DeliverButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [40 300 325 50], 'Callback', 'DeliverSpecificAmt;', 'TooltipString', 'Start liquid delivery', 'CData', DeliverButtonGFX);

@@ -148,6 +148,7 @@ for currentTrial = 1:MaxTrials
         UpdateOutcomePlot(TrialTypes, BpodSystem.Data);
         SaveBpodSessionData; % Saves the field BpodSystem.Data to the current data file
     end
+    HandlePauseCondition; % Checks to see if the protocol is paused. If so, waits until user resumes.
     if BpodSystem.BeingUsed == 0
         return
     end

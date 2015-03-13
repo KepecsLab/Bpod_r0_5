@@ -46,7 +46,7 @@ catch
         BpodSystem.SystemSettings = struct;
     end
     BpodSystem.BlankStateMatrix = GenerateBlankStateMatrix;
-    
+    BpodSystem.HostOS = system_dependent('getos');
     BpodSplashScreen(1);
     
     % Load Bpod path
@@ -121,6 +121,7 @@ close(BpodSystem.GUIHandles.SplashFig);
 InitializeBpodGUI;
 BpodSystem.BeingUsed = 0;
 BpodSystem.Live = 0;
+BpodSystem.Pause = 0;
 BpodSystem.HardwareState.Valves = zeros(1,8);
 BpodSystem.HardwareState.PWMLines = zeros(1,8);
 BpodSystem.HardwareState.PortSensors = zeros(1,8);
