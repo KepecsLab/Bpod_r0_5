@@ -44,7 +44,7 @@ if OpCode == 'V'
                 ManualOverrideEvent = 20+(ChannelCode*2);
             end
         case 'S'
-            ManualOverrideEvent = 28+ChannelCode;
+            ManualOverrideEvent = 27+ChannelCode;
         case 'X'
             ManualOverrideEvent = 256;
     end

@@ -296,6 +296,7 @@ if ~isempty(NameList)
         addpath(ProtocolPath);
         set(BpodSystem.GUIHandles.RunButton, 'cdata', BpodSystem.Graphics.PauseButton, 'TooltipString', 'Press to pause session');
         BpodSystem.BeingUsed = 1;
+        BpodSystem.ProtocolStartTime = now;
         run(ProtocolPath);
     else
         BpodErrorSound;

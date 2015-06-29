@@ -52,6 +52,8 @@ classdef BpodObject < handle
         BlankStateMatrix % Holds a blank state matrix for fast initialization of a new state matrix.
         Pause % Holds 1 if the system is paused and 0 if not.
         HostOS % Holds a string naming the host operating system (i.e. 'Microsoft Windows XP')
+        ProtocolStartTime % The time when the current protocol was started.
+        BonsaiSocket % An object containing a TCP/IP socket for communication with Bonsai
     end
     
     methods

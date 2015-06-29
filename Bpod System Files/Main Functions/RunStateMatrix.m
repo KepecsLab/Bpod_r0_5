@@ -48,7 +48,7 @@ nTotalStates = length(StateNames);
 UpdateBpodCommanderGUI; % Reads BpodSystem.HardwareState and BpodSystem.LastEvent to commander GUI.
 
 % Update time display
-TimeElapsed = ceil((now - BpodSystem.Birthdate)*100000);
+TimeElapsed = ceil((now - BpodSystem.ProtocolStartTime)*100000);
 set(BpodSystem.GUIHandles.TimeDisplay, 'String', Secs2HMS(TimeElapsed));
 set(BpodSystem.GUIHandles.RunButton, 'cdata', BpodSystem.Graphics.PauseButton);
 
@@ -68,6 +68,14 @@ while BpodSystem.InStateMatrix
             NewMessage = 0;
         end
     else
+        if BpodSystem.BonsaiSocket.Connected == 1
+            if BpodSocketServer('bytesAvailable') > 0
+                Byte = ReadOscByte;
+                OverrideMessage = ['VS' Byte];
+                BpodSystem.VirtualManualOverrideBytes = OverrideMessage;
+                BpodSystem.ManualOverrideFlag = 1;
+            end
+        end
         if BpodSystem.ManualOverrideFlag == 1;
             ManualOverrideEvent = VirtualManualOverride(BpodSystem.VirtualManualOverrideBytes);
             BpodSystem.ManualOverrideFlag = 0;
@@ -155,6 +163,15 @@ while BpodSystem.InStateMatrix
                 disp('Error: Invalid op code received')
         end
     else
+        if BpodSystem.EmulatorMode == 0
+            if BpodSystem.BonsaiSocket.Connected == 1
+                if BpodSocketServer('bytesAvailable') > 0
+                    Byte = ReadOscByte;
+                    OverrideMessage = ['VS' Byte]
+                    BpodSerialWrite(OverrideMessage, 'uint8');
+                end
+            end
+        end
         drawnow;
     end
 end

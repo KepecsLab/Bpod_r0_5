@@ -1,0 +1,2 @@
+Note: The design for the mouse poke is optimized for 3-d printing.
+However, mice eat PLA and possibly ABS. A future revision will feature a re-design optimized for machining. A bill of materials is available on the Bpod wiki. JS, June 2015

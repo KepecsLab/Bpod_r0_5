@@ -53,9 +53,9 @@ TrialTypes = ceil(rand(1,MaxTrials)*2);
 BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 
 %% Initialize plots
-BpodSystem.ProtocolFigures.OutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
-BpodSystem.GUIHandles.OutcomePlot = axes('Position', [.075 .3 .89 .6]);
-OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'init',2-TrialTypes);
+BpodSystem.ProtocolFigures.SideOutcomePlotFig = figure('Position', [200 200 1000 200],'name','Outcome plot','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
+BpodSystem.GUIHandles.SideOutcomePlot = axes('Position', [.075 .3 .89 .6]);
+SideOutcomePlot(BpodSystem.GUIHandles.SideOutcomePlot,'init',2-TrialTypes);
 BpodNotebook('init');
 
 %% Main trial loop
@@ -116,7 +116,7 @@ for currentTrial = 1:MaxTrials
         BpodSystem.Data = BpodNotebook('sync', BpodSystem.Data); % Sync with Bpod notebook plugin
         BpodSystem.Data.TrialSettings(currentTrial) = S; % Adds the settings used for the current trial to the Data struct (to be saved after the trial ends)
         BpodSystem.Data.TrialTypes(currentTrial) = TrialTypes(currentTrial); % Adds the trial type of the current trial to data
-        UpdateOutcomePlot(TrialTypes, BpodSystem.Data);
+        UpdateSideOutcomePlot(TrialTypes, BpodSystem.Data);
         SaveBpodSessionData; % Saves the field BpodSystem.Data to the current data file
     end
     HandlePauseCondition;
@@ -125,7 +125,7 @@ for currentTrial = 1:MaxTrials
     end
 end
 
-function UpdateOutcomePlot(TrialTypes, Data)
+function UpdateSideOutcomePlot(TrialTypes, Data)
 global BpodSystem
 Outcomes = zeros(1,Data.nTrials);
 for x = 1:Data.nTrials
@@ -137,4 +137,4 @@ for x = 1:Data.nTrials
         Outcomes(x) = 3;
     end
 end
-OutcomePlot(BpodSystem.GUIHandles.OutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes)
+SideOutcomePlot(BpodSystem.GUIHandles.SideOutcomePlot,'update',Data.nTrials+1,2-TrialTypes,Outcomes)

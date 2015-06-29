@@ -3,18 +3,21 @@ global BpodSystem % Allows access to Bpod device from this function
 TrialTypes = ceil(rand(1,5000)*2); % Make 5000 future trial types
 BpodSystem.Data.TrialTypes = []; % The trial type of each trial completed will be added here.
 for currentTrial = 1:5000
-    pause(0.5) % delay between trials so light flashes are visible
-    disp(['Trial#' num2str(currentTrial) ' TrialType ' num2str(TrialTypes(currentTrial))]) % Print trial details to screen
+    disp(['Trial# ' num2str(currentTrial) ' TrialType: ' num2str(TrialTypes(currentTrial))])
     if TrialTypes(currentTrial) == 1 % Determine which LED to set to max brightness (255)
-        LEDcode = {'PWM1', 255};
+        LEDcode = {'PWM1', 255}; MyStateChangeConditions = {'Port1In', 'LightOff'};
     else
-        LEDcode = {'PWM3', 255};
+        LEDcode = {'PWM3', 255}; MyStateChangeConditions = {'Port3In', 'LightOff'};
     end
     sma = NewStateMatrix(); % Assemble state matrix
-    sma = AddState(sma, 'Name', 'State1', ...
+    sma = AddState(sma, 'Name', 'LightOn', ...
+        'Timer', 0,...
+        'StateChangeConditions', MyStateChangeConditions,...
+        'OutputActions', LEDcode);
+    sma = AddState(sma, 'Name', 'LightOff', ...
         'Timer', 0.5,...
         'StateChangeConditions', {'Tup', 'exit'},...
-        'OutputActions', LEDcode);
+        'OutputActions', {});
     SendStateMatrix(sma); RawEvents = RunStateMatrix; % Send and run state matrix
     if ~isempty(fieldnames(RawEvents)) % If trial data was returned
         BpodSystem.Data = AddTrialEvents(BpodSystem.Data,RawEvents); % Computes trial events from raw data

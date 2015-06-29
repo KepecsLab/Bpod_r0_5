@@ -13,13 +13,18 @@ if ispc
 elseif ismac
     
 else
-    [~, CandidatePorts] = system('ls /dev/tty*');
-    PortNameStartPos = strfind(CandidatePorts, '/dev/ttyACM');
-    nPorts = length(PortNameStartPos);
-    Ports = []; nPortsFound = 0;
-    ArduinoPorts = cell(1,1);
+    [trash, RawSerialPortList] = system('ls /dev/ttyACM*');
+    string = strtrim(RawSerialPortList);
+    PortStringPositions = strfind(string, '/dev/ttyACM');
+    nPorts = length(PortStringPositions);
+    CandidatePorts = cell(1,nPorts);
+    nGoodPorts = 0;
     for x = 1:nPorts
-        ArduinoPorts{x} = strtrim(CandidatePorts(PortNameStartPos(x):PortNameStartPos(x)+12));
+        if PortStringPositions(x)+11 <= length(string)
+            CandidatePort = strtrim(string(PortStringPositions(x):PortStringPositions(x)+11));
+            nGoodPorts = nGoodPorts + 1;
+            CandidatePorts{nGoodPorts} = CandidatePort;
+        end
     end
-% ArduinoPorts = {'/dev/ttyS101'};
+    ArduinoPorts = CandidatePorts(1:nGoodPorts);
 end

@@ -145,11 +145,16 @@ switch Function
                 R = rem(length(Data(1,:)), 4); % Trim for down-sampling
                 if R > 0
                     Data1 = Data(1,1:length(Data(1,:))-R);
+                else
+                    Data1 = Data(1,:);
                 end
                 R = rem(length(Data(2,:)), 4); % Trim for down-sampling
                 if R > 0
                     Data2 = Data(2,1:length(Data(2,:))-R);
+                else
+                    Data2 = Data(2,:);
                 end
+                Data = zeros(1,length(Data1)/4);
                 Data(1,:) = mean(reshape(Data1, 4, length(Data1)/4)); % Down-sample 192kHz to 48kHz
                 Data(2,:) = mean(reshape(Data2, 4, length(Data2)/4)); % Down-sample 192kHz to 48kHz
             end

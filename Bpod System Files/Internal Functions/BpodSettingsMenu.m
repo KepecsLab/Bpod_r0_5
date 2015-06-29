@@ -25,12 +25,15 @@ ha = axes('units','normalized', 'position',[0 0 1 1]);
 uistack(ha,'bottom');
 BG = imread('SettingsMenuBG.bmp');
 image(BG); axis off; drawnow;
+ypos = 30;
 LiquidCalButtonGFX = imread('WaterCalBW.bmp');
-BpodSystem.GUIHandles.LiquidCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [45 30 40 40], 'Callback', @CalibrateValves, 'CData', LiquidCalButtonGFX, 'TooltipString', 'Calibrate valves for precise liquid delivery');
-SpeakerCalButtonGFX = imread('SpeakerCalButton.bmp');
-BpodSystem.GUIHandles.SoundCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [145 30 40 40], 'Callback', @CalibrateSound, 'CData', SpeakerCalButtonGFX, 'TooltipString', 'Test and calibrate sound delivery');
-PortCalButtonGFX = imread('PortConfigButton.bmp');
-BpodSystem.GUIHandles.PortCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [245 30 40 40], 'Callback', @ConfigurePorts, 'CData', PortCalButtonGFX, 'TooltipString', 'Configure low impedence inputs (ports and wire terminals)');
+BpodSystem.GUIHandles.LiquidCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [ypos 32 40 40], 'Callback', @CalibrateValves, 'CData', LiquidCalButtonGFX, 'TooltipString', 'Calibrate valves for precise liquid delivery');
+SpeakerCalButtonGFX = imread('SpeakerCalButton.bmp'); ypos = ypos + 76;
+BpodSystem.GUIHandles.SpeakerCalButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [ypos 32 40 40], 'Callback', @CalibrateSound, 'CData', SpeakerCalButtonGFX, 'TooltipString', 'Calibrate valves for precise liquid delivery');
+BonsaiButtonGFX = imread('BonsaiButton.bmp'); ypos = ypos + 76;
+BpodSystem.GUIHandles.SoundCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [ypos 32 40 40], 'Callback', @ConfigureBonsai, 'CData', BonsaiButtonGFX, 'TooltipString', 'Setup Bonsai socket connection');
+PortCalButtonGFX = imread('PortConfigButton.bmp'); ypos = ypos + 76;
+BpodSystem.GUIHandles.PortCalLaunchButton = uicontrol('Style', 'pushbutton', 'String', '', 'Position', [ypos 32 40 40], 'Callback', @ConfigurePorts, 'CData', PortCalButtonGFX, 'TooltipString', 'Configure low impedence inputs (ports and wire terminals)');
 
 function CalibrateValves(trash, othertrash)
 global BpodSystem
@@ -40,7 +43,12 @@ LiquidCalibrationManager;
 function CalibrateSound(trash, othertrash)
 global BpodSystem
 close(BpodSystem.GUIHandles.SettingsMenuFig)
-SoundTestAndCalApp;
+SoundCalibrationManager;
+
+function ConfigureBonsai(trash, othertrash)
+global BpodSystem
+close(BpodSystem.GUIHandles.SettingsMenuFig)
+ConfigureBonsaiSocket;
 
 function ConfigurePorts(trash, othertrash)
 global BpodSystem

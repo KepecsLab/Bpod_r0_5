@@ -39,6 +39,7 @@ catch
     BpodSystem.GUIHandles.SplashFig = figure('Position',[400 300 485 300],'name','Bpod','numbertitle','off', 'MenuBar', 'none', 'Resize', 'off');
     BpodSystem.LastTimestamp = 0;
     BpodSystem.InStateMatrix = 0;
+    BpodSystem.BonsaiSocket.Connected = 0;
     if exist('BpodSystemSettings.mat') > 0
         load BpodSystemSettings;
         BpodSystem.SystemSettings = BpodSystemSettings;
@@ -115,6 +116,19 @@ if BpodSystem.EmulatorMode == 1
 end
 BpodSplashScreen(2);
 BpodSplashScreen(3);
+if isfield(BpodSystem.SystemSettings, 'BonsaiAutoConnect')
+    if BpodSystem.SystemSettings.BonsaiAutoConnect == 1
+        try
+            disp('Attempting to connect to Bonsai. Timeout in 10 seconds...')
+            BpodSocketServer('connect', 11235);
+            BpodSystem.BonsaiSocket.Connected = 1;
+            disp('Connected to Bonsai on port: 11235')
+        catch
+            BpodErrorSound;
+            disp('Warning: Auto-connect to Bonsai failed. Please connect manually.')
+        end
+    end
+end
 BpodSplashScreen(4);
 BpodSplashScreen(5);
 close(BpodSystem.GUIHandles.SplashFig);

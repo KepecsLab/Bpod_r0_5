@@ -78,8 +78,8 @@ image(BG); axis off;
 
 LiquidCalButtonGFX = imread('WaterCalBW.bmp');
 set(handles.pushbutton4, 'CData', LiquidCalButtonGFX, 'TooltipString', 'Liquid reward calibration');
-SpeakerCalButtonGFX = imread('SpeakerCalButton.bmp');
-set(handles.pushbutton3, 'CData', SpeakerCalButtonGFX, 'TooltipString', 'Sound Server setup and calibration');
+SpeakerCalButtonGFX = imread('BonsaiButton.bmp');
+set(handles.pushbutton3, 'CData', SpeakerCalButtonGFX, 'TooltipString', 'Bonsai configuration');
 OlfCalButtonGFX = imread('OlfButton.bmp');
 set(handles.pushbutton2, 'CData', OlfCalButtonGFX, 'TooltipString', 'Olfactometer setup and calibration');
 PortCalButtonGFX = imread('PortConfigButton.bmp');
@@ -126,7 +126,7 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+BonsaiSocketConfig
 
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)

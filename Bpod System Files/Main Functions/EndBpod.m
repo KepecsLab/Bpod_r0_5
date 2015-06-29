@@ -52,6 +52,11 @@ if BpodSystem.BeingUsed == 0
     else
         disp('Bpod emulator successfully closed.')
     end
+    BpodSocketServer('close');
+    try 
+       close(BpodSystem.GUIHandles.ConfigureBonsaiFig)
+    catch
+    end
 else
     msgbox('There is a running protocol. Please stop it first.')
     BpodErrorSound;
