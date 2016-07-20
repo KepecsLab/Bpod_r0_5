@@ -1,5 +1,5 @@
 function BpodErrorSound()
-ErrorSound = wavread('BpodError.wav');
+ErrorSound = audioread('BpodError.wav');
 try
 sound(ErrorSound, 44100);
 catch
